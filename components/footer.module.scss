@@ -1,0 +1,24 @@
+.Footer {
+  width: 100%;
+  height: 100px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.Footer img {
+  margin-top: 1em;
+  height: 3em;
+}
+
+.Footer p {
+  margin-top: 0;
+}
+
+.Footer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
