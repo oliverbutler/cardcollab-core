@@ -5,8 +5,8 @@ const Editor = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   useEffect(() => {
-    var contentState = editorState.getCurrentContent();
-    console.log(convertToRaw(contentState));
+    // var contentState = editorState.getCurrentContent();
+    // console.log(convertToRaw(contentState));
   }, [editorState]);
 
   return (
