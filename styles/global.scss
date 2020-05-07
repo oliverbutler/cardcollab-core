@@ -131,3 +131,14 @@ code {
     flex-direction: column;
   }
 }
+
+div.DraftEditor-root {
+  border: 1px solid #000;
+  height: 200px;
+  width: 300px;
+  overflow-y: auto;
+}
+div.DraftEditor-editorContainer,
+div.public-DraftEditor-content {
+  height: 100%;
+}

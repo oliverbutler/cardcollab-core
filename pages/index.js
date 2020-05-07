@@ -1,7 +1,8 @@
 import Head from "next/head";
-import Link from "next/link";
+import { useState, createRef, useEffect } from "react";
+import Editor from "../components/editor/editor";
 
-export default function Home({ fetchData }) {
+const index = () => {
   return (
     <div className="container">
       <Head>
@@ -15,6 +16,8 @@ export default function Home({ fetchData }) {
         <p className="description">
           Get started by <code>logging in</code> 📚
         </p>
+
+        <Editor />
 
         <div className="grid">
           <a href="https://nextjs.org/docs" className="card">
@@ -48,4 +51,6 @@ export default function Home({ fetchData }) {
       </main>
     </div>
   );
-}
+};
+
+export default index;
