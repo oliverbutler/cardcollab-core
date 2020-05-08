@@ -8,9 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.5",
+    "mongoose": "^5.9.12",
     "next": "9.3.5",
+    "next-connect": "^0.6.6",
     "node-fetch": "^2.6.0",
     "quill-delta": "^4.2.2",
     "react": "16.13.1",
