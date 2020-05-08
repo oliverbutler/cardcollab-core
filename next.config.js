@@ -9,9 +9,13 @@ module.exports = {
     SESSION_COOKIE_SECRET: process.env.SESSION_COOKIE_SECRET,
     MONGO_DB: process.env.MONGO_DB,
     REDIRECT_URI:
-      process.env.REDIRECT_URI || "http://localhost:3000/api/auth0/callback",
+      process.env.REDIRECT_URI ||
+      process.env.VERCEL_URL + "/api/auth0/callback" ||
+      "http://localhost:3000/api/auth0/callback",
     POST_LOGOUT_REDIRECT_URI:
-      process.env.POST_LOGOUT_REDIRECT_URI || "http://localhost:3000/",
+      process.env.POST_LOGOUT_REDIRECT_URI ||
+      process.env.VERCEL_URL ||
+      "http://localhost:3000/",
     SESSION_COOKIE_LIFETIME: 7200, // 2 hours
   },
 };
