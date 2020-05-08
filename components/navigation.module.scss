@@ -1,0 +1,40 @@
+.navbar {
+  ul {
+    display: flex;
+    padding: 1em;
+    margin: 0;
+    .navButton,
+    .logout {
+      margin-left: auto;
+    }
+  }
+
+  li {
+    display: inline;
+    align-self: center;
+    padding-right: 1em;
+    &.navButton,
+    .logout {
+      padding-right: 0;
+    }
+  }
+
+  .navButton {
+    background-color: #3454d1;
+    padding: 0.5em 1em !important;
+    border-radius: 0.5em;
+    a {
+      color: white;
+      font-weight: bold;
+    }
+  }
+
+  a {
+    color: black;
+    font-size: 1.2em;
+  }
+
+  img {
+    height: 4em;
+  }
+}
