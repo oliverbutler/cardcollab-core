@@ -9,6 +9,7 @@ const connectDb = (handler) => async (req, res) => {
     useCreateIndex: true,
     useUnifiedTopology: true,
   });
+  await import("../models/user");
   return handler(req, res);
 };
 
