@@ -8,43 +8,39 @@ const index = () => {
 
   return (
     <Layout user={user} loading={loading}>
-      <div className="container">
-        <Head>
-          <title>CardCollab 📚</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+      <Head>
+        <title>CardCollab 📚</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <main>
-          <img src="/logo-full.svg" />
+      <img src="/logo-full.svg" />
 
-          <p className="description">
-            Get started by <code>logging in</code> 📚
+      <p className="description">
+        Get started by <code>logging in</code> 📚
+      </p>
+
+      {loading && <p>Loading login info...</p>}
+
+      {!loading && !user && (
+        <>
+          <p>
+            To test the login click in <i>Login</i>
           </p>
+          <p>
+            Once you have logged in you should be able to click in{" "}
+            <i>Profile</i> and <i>Logout</i>
+          </p>
+        </>
+      )}
 
-          {loading && <p>Loading login info...</p>}
-
-          {!loading && !user && (
-            <>
-              <p>
-                To test the login click in <i>Login</i>
-              </p>
-              <p>
-                Once you have logged in you should be able to click in{" "}
-                <i>Profile</i> and <i>Logout</i>
-              </p>
-            </>
-          )}
-
-          {user && (
-            <>
-              <h4>Rendered user info on the client</h4>
-              <img src={user.picture} alt="user picture" />
-              <p>nickname: {user.nickname}</p>
-              <p>name: {user.name}</p>
-            </>
-          )}
-        </main>
-      </div>
+      {user && (
+        <>
+          <h4>Rendered user info on the client</h4>
+          <img src={user.picture} alt="user picture" />
+          <p>nickname: {user.nickname}</p>
+          <p>name: {user.name}</p>
+        </>
+      )}
     </Layout>
   );
 };
