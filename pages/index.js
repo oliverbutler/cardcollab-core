@@ -1,47 +1,37 @@
 import Head from "next/head";
-
-import Layout from "../components/layout";
-import { useFetchUser } from "../lib/user";
+import AppContext from "../context/appContext";
+import { useContext, useEffect } from "react";
+import Jumbotron from "../components/jumbotron";
+import styles from "../styles/index.module.scss";
 
 const index = () => {
-  const { user, loading } = useFetchUser();
+  const { state, dispatch } = useContext(AppContext);
 
   return (
-    <Layout user={user} loading={loading}>
+    <div className="container">
       <Head>
         <title>CardCollab 📚</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Jumbotron />
 
-      <img src="/logo-full.svg" />
-
-      <p className="description">
-        Get started by <code>logging in</code> 📚
-      </p>
-
-      {loading && <p>Loading login info...</p>}
-
-      {!loading && !user && (
-        <>
-          <p>
-            To test the login click in <i>Login</i>
-          </p>
-          <p>
-            Once you have logged in you should be able to click in{" "}
-            <i>Profile</i> and <i>Logout</i>
-          </p>
-        </>
-      )}
-
-      {user && (
-        <>
-          <h4>Rendered user info on the client</h4>
-          <img src={user.picture} alt="user picture" />
-          <p>nickname: {user.nickname}</p>
-          <p>name: {user.name}</p>
-        </>
-      )}
-    </Layout>
+      <main>
+        <div className={styles.infoWithPicture}>
+          <div>
+            <h1>Collaborative Success</h1>
+            <p>
+              Students who utilize flashcards are more likely to succeed in
+              their studies, revise faster and more efficiently. <br /> <br />
+              Here at CardCollab we aim to develop the most intuitive, powerful,
+              and opensource study platform.
+              <br />
+              By Students, for Students
+            </p>
+          </div>
+          <img src="/books.svg"></img>
+        </div>
+      </main>
+    </div>
   );
 };
 

@@ -1,9 +1,5 @@
-import React from "react";
-
-// This import is only needed when checking authentication status directly from getInitialProps
-// import auth0 from '../lib/auth0'
-import { useFetchUser } from "../lib/user";
-import Layout from "../components/layout";
+import { useContext } from "react";
+import AppContext from "../context/appContext";
 
 function ProfileCard({ user }) {
   return (
@@ -11,22 +7,28 @@ function ProfileCard({ user }) {
       <h1>Profile</h1>
 
       <div>
-        <h3>Profile (client rendered)</h3>
-        <img src={user.picture} alt="user picture" />
-        <p>nickname: {user.nickname}</p>
-        <p>name: {user.name}</p>
+        <img src={user.picture} alt="user picture" style={{ width: "20em" }} />
+        <p>Nickname: {user.nickname}</p>
+        <p>Name: {user.name}</p>
+        <p>Email: {JSON.stringify(user)}</p>
       </div>
     </>
   );
 }
 
 function Profile() {
-  const { user, loading } = useFetchUser({ required: true });
+  const { state, dispatch } = useContext(AppContext);
 
   return (
-    <Layout user={user} loading={loading}>
-      {loading ? <>Loading...</> : <ProfileCard user={user} />}
-    </Layout>
+    <div className="container">
+      <main>
+        {state.loading || !state.user ? (
+          <div>Loading...</div>
+        ) : (
+          <ProfileCard user={state.user} />
+        )}
+      </main>
+    </div>
   );
 }
 
