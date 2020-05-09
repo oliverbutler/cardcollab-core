@@ -6,19 +6,16 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-.Footer img {
-  margin-top: 1em;
-  height: 3em;
-}
-
-.Footer p {
-  margin-top: 0;
-}
-
-.Footer a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  img {
+    margin-top: 1em;
+    height: 3em;
+  }
+  p {
+    margin-top: 0;
+  }
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
