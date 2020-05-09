@@ -20,6 +20,7 @@
 
 # Serverless directories
 .serverless
+.serverless_nextjs
 
 # debug
 npm-debug.log*
@@ -34,3 +35,4 @@ yarn-error.log*
 .env
 
 .now
+
