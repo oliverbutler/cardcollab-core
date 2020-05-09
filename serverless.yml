@@ -1,3 +1,8 @@
 # # serverless.yml
 cardcollab:
   component: serverless-next.js
+  inputs:
+    domain: "cardcollab.com"
+    build:
+      env:
+        URL: "https://cardcollab.com"
