@@ -1,8 +1,11 @@
 // next.config.js
 var URL = "http://localhost:3000";
+if (process.env.URL) {
+  URL = process.env.URL;
+}
 if (process.env.VERCEL_URL) {
   URL = "https://cardcollab.com";
-}
+
 
 module.exports = {
   target: "serverless",
@@ -13,8 +16,8 @@ module.exports = {
     AUTH0_SCOPE: "openid profile email",
     SESSION_COOKIE_SECRET: process.env.SESSION_COOKIE_SECRET,
     MONGO_DB: process.env.MONGO_DB,
-    REDIRECT_URI: process.env.REDIRECT_URI || URL + "/api/auth0/callback",
-    POST_LOGOUT_REDIRECT_URI: process.env.POST_LOGOUT_REDIRECT_URI || URL,
+    REDIRECT_URI: URL + "/api/auth0/callback",
+    POST_LOGOUT_REDIRECT_URI: URL,
     SESSION_COOKIE_LIFETIME: 7200, // 2 hours
   },
 };
