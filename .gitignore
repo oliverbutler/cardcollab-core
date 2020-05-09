@@ -18,6 +18,9 @@
 # misc
 .DS_Store
 
+# Serverless directories
+.serverless
+
 # debug
 npm-debug.log*
 yarn-debug.log*
