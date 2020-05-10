@@ -10,6 +10,7 @@ const connectDb = (handler) => async (req, res) => {
     useUnifiedTopology: true,
   });
   await import("../models/card.js");
+  await import("../models/user.js");
 
   return handler(req, res);
 };
