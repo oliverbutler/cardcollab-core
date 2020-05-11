@@ -1,25 +1,17 @@
 import mongoose from "mongoose";
 import dbConnect from "../../../middlewares/db";
-import auth0 from "../../../lib/auth0";
-
-const { Card } = mongoose.models;
 
 const handler = async (req, res) => {
   switch (req.method) {
     case "GET":
-      const { user } = await auth0.getSession(req);
-      console.log(user);
-
-      const tokenCache = await auth0.tokenCache(req, res);
-      const { accessToken } = await tokenCache.getAccessToken();
-      console.log(accessToken);
-
-      const cards = await Card.find(req.query.q ? JSON.parse(req.query.q) : {});
+      const cards = await mongoose.models.Card.find(
+        req.query.q ? JSON.parse(req.query.q) : {}
+      );
       res.send(cards);
       break;
 
     case "POST":
-      const newCard = new Card(req.body);
+      const newCard = new mongoose.models.Card(req.body);
       await newCard
         .save()
         .then(() => {
@@ -31,7 +23,7 @@ const handler = async (req, res) => {
       break;
 
     case "PUT":
-      Card.updateMany(
+      mongoose.models.Card.updateMany(
         req.query.q ? JSON.parse(req.query.q) : {},
         req.body
       ).then((cards, err) => {
@@ -41,12 +33,12 @@ const handler = async (req, res) => {
       break;
 
     case "DELETE":
-      Card.deleteMany(req.query.q ? JSON.parse(req.query.q) : {}).then(
-        (cards, err) => {
-          if (err) res.status(400).end();
-          else res.status(204).end();
-        }
-      );
+      mongoose.models.Card.deleteMany(
+        req.query.q ? JSON.parse(req.query.q) : {}
+      ).then((cards, err) => {
+        if (err) res.status(400).end();
+        else res.status(204).end();
+      });
       break;
   }
 };
