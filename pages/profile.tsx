@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import AppContext from "../context/appContext";
+import AppContext from "context/appContext";
 
 function ProfileCard({ user }) {
   return (

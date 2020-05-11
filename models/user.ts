@@ -1,9 +1,29 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const Schema = mongoose.Schema;
+import mongoose, { Schema, Document } from "mongoose";
 
 function toCapitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+/**
+ * Interface for defining an identity, e.g. an auth provider
+ */
+export interface IIdentity extends Document {
+  provider: string;
+  id: string;
+  isSocial: boolean;
+}
+
+/**
+ * Interface for defining a User
+ */
+export interface IUser extends Document {
+  username: string;
+  dateOfBirth: Date;
+  givenName: string;
+  familyName: string;
+  email: string;
+  identities: Array<IIdentity>;
+  roles: Array<"student" | "admin">;
 }
 
 const identity = new Schema({
@@ -12,7 +32,7 @@ const identity = new Schema({
   isSocial: { type: Boolean, required: true },
 });
 
-const userSchema = new Schema({
+const userSchema: Schema = new Schema({
   username: { type: String, required: true, unique: true },
   dateOfBirth: { type: Date, required: true },
   givenName: { type: String, required: true, set: toCapitalize },
@@ -44,13 +64,11 @@ userSchema.methods.toJSON = function () {
   delete obj.emailCallback;
   delete obj.dateOfBirth;
   delete obj.identities;
-  delete secret;
-  delete lastIp;
-  delete lastLogin;
-  delete loginCount;
+  delete obj.secret;
+  delete obj.lastIp;
+  delete obj.lastLogin;
+  delete obj.loginCount;
   return obj;
 };
 
-var User = mongoose.model("User", userSchema);
-
-module.exports = User;
+export default mongoose.model<IUser>("User", userSchema);

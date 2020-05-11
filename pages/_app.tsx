@@ -1,8 +1,8 @@
-import "../styles/global.scss";
-import Footer from "../components/footer";
-import Navigation from "../components/navigation";
-import AppContext from "../context/appContext";
-import { useFetchUser } from "../lib/user";
+import "styles/global.scss";
+import Footer from "components/footer";
+import Navigation from "components/navigation";
+import AppContext from "context/appContext";
+import { useFetchUser } from "util/user";
 import { useEffect } from "react";
 import Head from "next/head";
 

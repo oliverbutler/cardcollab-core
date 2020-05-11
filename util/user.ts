@@ -1,4 +1,4 @@
-import fetch from "isomorphic-unfetch";
+import fetch from "isomorphic-fetch";
 
 export const fetchUser = async (cookie = "") => {
   if (typeof window !== "undefined" && window.__user) {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useContext } from "react";
 import AppContext from "../context/appContext";
 import styles from "./navigation.module.scss";
-import { capitalize } from "../lib/functions";
+import { capitalize } from "../util/functions";
 import { useRouter } from "next/router";
 
 function Navigation() {

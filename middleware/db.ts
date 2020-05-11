@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
-
 import getConfig from "next/config";
+
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
 const connectDb = (handler) => async (req, res) => {
-  context.callbackWaitsForEmptyEventLoop = false;
-
   if (mongoose.connections[0].readyState) return handler(req, res);
   // Using new database connection
   await mongoose.connect(serverRuntimeConfig.MONGO_DB, {
@@ -14,8 +12,8 @@ const connectDb = (handler) => async (req, res) => {
     useCreateIndex: true,
     useUnifiedTopology: true,
   });
-  await import("../models/card.js");
-  await import("../models/user.js");
+  await import("models/card");
+  await import("models/user");
 
   return handler(req, res);
 };
