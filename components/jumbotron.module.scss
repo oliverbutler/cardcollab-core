@@ -1,14 +1,3 @@
-    /*********************
-  RESPONSIVE BREAKPOINT
-  **********************/
-  @mixin breakpoint($point) {
-    @if $point == 715 {
-      @media (max-width: 715px) { @content; }
-    }
-    @else if $point == another-break-point {
-      @media (max-width: 0) { @content; }
-    }
-  }
 
 .jumbotron {
   width: 150%;
@@ -19,7 +8,7 @@
     font-size: 2.5em;
     margin-top: -1em;
   }
-  @include breakpoint(715) {
+  @media only screen and (max-width: 720px) {
     width: 60em;
     p {
       margin-top: 0;
