@@ -15,5 +15,7 @@ module.exports = {
     REDIRECT_URI: URL + "/api/auth0/callback",
     POST_LOGOUT_REDIRECT_URI: URL,
     SESSION_COOKIE_LIFETIME: 7200, // 2 hours
+    SECRET: process.env.SECRET,
+    MAIL_GUN_API_KEY: process.env.MAIL_GUN_API_KEY,
   },
 };
