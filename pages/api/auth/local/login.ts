@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import dbConnect from "middleware/db";
 import { sleep } from "util/functions";
-import { getSecret, signJWT } from "util/auth";
+import { genSecret, genIdToken, genRefreshToken } from "util/auth";
 import nanoid from "nanoid";
+import { IUser } from "models/user";
 
 /**
  *  Login route for local authentication, takes email and password,
@@ -16,7 +17,7 @@ const login = (req, res) => {
 
   const { User } = mongoose.models;
 
-  User.findOne({ email: req.body.email }, async (err, user) => {
+  User.findOne({ email: req.body.email }, async (err, user: IUser) => {
     if (err) {
       var delay = Math.floor(Math.random() * 300) + 200;
       await sleep(delay); // to defend against time-based attacks, as an invalid email
@@ -26,11 +27,9 @@ const login = (req, res) => {
         .send({ status: "error", message: "Incorrect email or password" });
     }
 
-    if (getSecret(req.body.password) == user.secret) {
-      const refreshToken = nanoid.nanoid(64);
-
-      res.send({ idToken, refreshToken });
-    } else
+    if (genSecret(req.body.password) == user.secret)
+      res.send({ idToken: genIdToken(user), refreshToken: genRefreshToken() });
+    else
       res
         .status(400)
         .send({ status: "error", message: "Incorrect email or password" });
