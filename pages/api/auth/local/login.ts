@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
-import dbConnect from "../../../../middlewares/db";
-import { sleep } from "../../../../lib/functions";
-import { getSecret, signJWT } from "../../../../lib/auth";
-import crypto from "crypto";
+import dbConnect from "middleware/db";
+import { sleep } from "util/functions";
+import { getSecret, signJWT } from "util/auth";
+import nanoid from "nanoid";
 
 /**
  *  Login route for local authentication, takes email and password,
  *  returns short lived JWT (15min) + a long(ish) lived Refresh Token (24hour)
  */
 const login = (req, res) => {
-  if (!req.body.email || req.body.password)
+  if (!req.body.email || !req.body.password)
     res.status(400).send("Must contain email and password");
+
+  console.log(req.body);
 
   const { User } = mongoose.models;
 
@@ -25,13 +27,7 @@ const login = (req, res) => {
     }
 
     if (getSecret(req.body.password) == user.secret) {
-      const idToken = signJWT({
-        iat: Date.now(),
-        exp: Date.now() + 15 * 60,
-        sub: user._id,
-        username: user.username,
-      });
-      const refreshToken = crypto.randomBytes(100).toString("hex");
+      const refreshToken = nanoid.nanoid(64);
 
       res.send({ idToken, refreshToken });
     } else

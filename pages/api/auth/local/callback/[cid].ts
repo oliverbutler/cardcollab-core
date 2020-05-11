@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import dbConnect from "../../../../../middlewares/db";
+import dbConnect from "middleware/db";
 
 function callback(req, res) {
   if (!req.query.cid) res.status(400).end();

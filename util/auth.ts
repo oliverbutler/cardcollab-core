@@ -1,6 +1,8 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getConfig from "next/config";
+import nanoid from "nanoid";
+import { IUser } from "models/user";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
@@ -41,6 +43,30 @@ export const verifyJWT = (JWT) => {
  *
  * @param str - The string to hash
  */
-export const getSecret = (str: String) => {
-  return bcrypt.genSaltSync(15, str);
+export const genSecret = async (str: string) => {
+  const salt = bcrypt.genSaltSync(15);
+  return bcrypt.hashSync(str, salt);
+};
+
+/**
+ * Generate an idToken using a user
+ *
+ * @param user - User for the JWT
+ */
+export const genIdToken = (user: IUser) => {
+  return signJWT({
+    iat: Date.now(),
+    exp: Date.now() + 15 * 60,
+    sub: user._id,
+    username: user.username,
+  });
+};
+
+/**
+ * Generate a refresh token, just a nanoID
+ *
+ * @param length - Length of refresh token. 32 default
+ */
+export const genRefreshToken = (length: number = 32) => {
+  return nanoid.nanoid(length);
 };
