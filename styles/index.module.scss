@@ -13,6 +13,12 @@
     width: 50%;
 	}
   @media only screen and (max-width: 800px) {
+    width: 140%;
+    text-align: center;
     flex-direction: column;
+    img {
+      width: 100%;
+    }
+
   }
 }
