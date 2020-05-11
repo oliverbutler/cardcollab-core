@@ -3,6 +3,9 @@ import getConfig from "next/config";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
+/**
+ * Initialize Auth0 Client with .env variables
+ */
 export default initAuth0({
   clientId: serverRuntimeConfig.AUTH0_CLIENT_ID,
   clientSecret: serverRuntimeConfig.AUTH0_CLIENT_SECRET,

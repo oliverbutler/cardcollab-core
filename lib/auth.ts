@@ -12,11 +12,11 @@ const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
  * @param nbf - Not before
  * @param sub - Subject of the JWT, e.g. userID
  */
-type Payload = {
-  exp: Number;
-  iat: Number;
-  nbf: Number;
+export type Payload = {
+  exp: number;
+  iat: number;
   sub: String;
+  username: String;
 };
 
 /**

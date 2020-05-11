@@ -8,8 +8,6 @@ const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 const register = async (req, res) => {
   const { User } = mongoose.models;
 
-  console.log(req.connection.remoteAddress);
-
   var emailCallback = crypto.randomBytes(32).toString("hex");
 
   const user = new User({
