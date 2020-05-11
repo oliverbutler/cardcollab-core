@@ -1,8 +1,31 @@
 .navbar {
+
+  /*********************
+  VARIABLES
+  **********************/
+  $link-color:grey;
+  $link-hover:#3454d1;
+  $link-vertical-padding:15px;      //Controls Menu top & bottom padding
+  $link-horizontal-padding:20px;    //Contols Menu left & right padding
+  $menu-background:white;        //Control Menu Color Scheme
+
+  /*********************
+  RESPONSIVE BREAKPOINT
+  **********************/
+  @mixin breakpoint($point) {
+    @if $point == 715 {
+      @media (max-width: 715px) { @content; }
+    }
+    @else if $point == another-break-point {
+      @media (max-width: 0) { @content; }
+    }
+  }
+
   ul {
     display: flex;
-    padding: 1em;
+    padding: 0em;
     margin: 0;
+    box-shadow:0px 1px 3px rgba(0,0,0,.7);
     .navButton,
     .logout {
       margin-left: auto;
@@ -13,6 +36,10 @@
     display: inline;
     align-self: center;
     padding-right: 1em;
+    @include breakpoint(715) {
+      float:none;
+      position:relative;
+      margin:0;}
     &.navButton,
     .logout {
       padding-right: 0;
@@ -21,11 +48,21 @@
 
   .navButton {
     background-color: #3454d1;
-    padding: 0.5em 1em !important;
+    color:white;
     border-radius: 0.5em;
+    padding: 0.7em 1.5em !important;
     a {
+      
+
       color: white;
       font-weight: bold;
+      
+    }
+    @include breakpoint(715) {
+      display:table;
+      margin:0;
+      padding: 0.5em 1em !important;
+      right: 5%;
     }
   }
 
