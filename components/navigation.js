@@ -16,7 +16,7 @@ function Navigation() {
         <li>
           <Link href="/">
             <a>
-              <img src="/logo.svg" alt="CardCollab Logo" />
+              <img id="exclude" src="/logo.svg" alt="CardCollab Logo" />
             </a>
           </Link>
         </li>
@@ -35,19 +35,19 @@ function Navigation() {
             router.pathname === "/profile" ? (
               <li className={styles.logout}>
                 <Link href="/api/auth0/logout">
-                  <a>Logout</a>
+                  <a id="exclude">Logout</a>
                 </Link>
               </li>
             ) : (
               <li className={styles.navButton}>
                 <Link href="/profile">
-                  <a>Welcome {capitalize(state.user.nickname)}</a>
+                  <a id="exclude">Welcome {capitalize(state.user.nickname)}</a>
                 </Link>
               </li>
             )
           ) : (
             <li className={styles.navButton}>
-              <a href="/api/auth0/login">Login</a>
+              <a id="exclude" href="/api/auth0/login">Login</a>
             </li>
           ))}
       </ul>
