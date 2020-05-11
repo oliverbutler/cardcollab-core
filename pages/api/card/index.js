@@ -7,13 +7,6 @@ const { Card } = mongoose.models;
 const handler = async (req, res) => {
   switch (req.method) {
     case "GET":
-      const { user } = await auth0.getSession(req);
-      console.log(user);
-
-      const tokenCache = await auth0.tokenCache(req, res);
-      const { accessToken } = await tokenCache.getAccessToken();
-      console.log(accessToken);
-
       const cards = await Card.find(req.query.q ? JSON.parse(req.query.q) : {});
       res.send(cards);
       break;
