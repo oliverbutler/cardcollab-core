@@ -1,3 +1,6 @@
 {
-  "regions": ["lhr1", "dub1"]
+  "regions": ["lhr1", "dub1"],
+  "env": {
+    "MONGO_DB": "mongodb+srv://dbUser:xe6kBXW4Ix6bQr6M@cc0-2scih.mongodb.net/cardcollabdb?retryWrites=true&w=majority"
+  }
 }
