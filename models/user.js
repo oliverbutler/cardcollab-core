@@ -7,15 +7,14 @@ function toCapitalize(str) {
 }
 
 const identity = new Schema({
-  provider: String,
-  id: String,
-  isSocial: Boolean,
+  provider: { type: String, required: true },
+  id: { type: String, required: true },
+  isSocial: { type: Boolean, required: true },
 });
 
 const userSchema = new Schema({
-  name: String,
   username: { type: String, required: true, unique: true },
-  dateOfBirth: Date,
+  dateOfBirth: { type: Date, required: true },
   givenName: { type: String, required: true, set: toCapitalize },
   familyName: { type: String, required: true, set: toCapitalize },
   email: {
@@ -28,17 +27,29 @@ const userSchema = new Schema({
       "Not a valid email",
     ],
   },
-  cards: [Schema.Types.ObjectId],
   emailVerified: { type: Boolean, default: false },
+  emailCallback: String,
   identities: [identity],
-  roles: [String],
+  roles: [{ type: String, default: ["student"] }],
   picture: String,
   secret: String,
   updatedAt: Date,
   lastIp: String,
   lastLogin: Date,
-  loginCounts: Number,
+  loginCount: Number,
 });
+
+userSchema.methods.toJSON = function () {
+  var obj = this.toObject();
+  delete obj.emailCallback;
+  delete obj.dateOfBirth;
+  delete obj.identities;
+  delete secret;
+  delete lastIp;
+  delete lastLogin;
+  delete loginCount;
+  return obj;
+};
 
 var User = mongoose.model("User", userSchema);
 
