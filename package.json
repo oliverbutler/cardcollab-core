@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "aws-sdk": "^2.672.0",
+    "aws-sdk": "^2.674.0",
     "bcryptjs": "^2.4.3",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.5",

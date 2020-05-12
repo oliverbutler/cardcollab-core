@@ -1,6 +1,4 @@
 // next.config.js
-const path = require("path");
-const webpack = require("webpack");
 
 var URL = "http://localhost:3000";
 if (process.env.URL) URL = process.env.URL;
