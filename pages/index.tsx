@@ -1,12 +1,8 @@
 import Head from "next/head";
-import AppContext from "context/appContext";
-import { useContext, useEffect } from "react";
 import Jumbotron from "components/jumbotron";
 import styles from "styles/index.module.scss";
 
 const index = () => {
-  const { state, dispatch } = useContext(AppContext);
-
   return (
     <div className="container">
       <Head>
