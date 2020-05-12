@@ -2,9 +2,10 @@ import "styles/global.scss";
 import Footer from "components/footer";
 import Navigation from "components/navigation";
 import AppContext from "context/appContext";
-import { useFetchUser } from "util/user";
-import { useEffect } from "react";
+// import { useFetchUser } from "util/user";
+import { useEffect, useReducer } from "react";
 import Head from "next/head";
+import React from "react";
 
 const initialState = {
   user: null,
@@ -31,11 +32,11 @@ const reducer = (prevState, action) => {
 };
 
 const App = ({ Component, pageProps }) => {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    useFetchUser({ state, dispatch });
-  }, []);
+  // useEffect(() => {
+  //   useFetchUser({ state, dispatch });
+  // }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

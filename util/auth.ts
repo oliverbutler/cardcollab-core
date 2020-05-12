@@ -43,9 +43,19 @@ export const verifyJWT = (JWT) => {
  *
  * @param str - The string to hash
  */
-export const genSecret = async (str: string) => {
+export const genSecret = async (str: string): string => {
   const salt = bcrypt.genSaltSync(15);
-  return bcrypt.hashSync(str, salt);
+  return await bcrypt.hashSync(str, salt);
+};
+
+/**
+ * Compare a secret to the hash using bcrypt
+ *
+ * @param secret
+ * @param hash
+ */
+export const compareSecret = (secret: string, hash: string): boolean => {
+  return bcrypt.compareSync(secret, hash);
 };
 
 /**
@@ -53,11 +63,11 @@ export const genSecret = async (str: string) => {
  *
  * @param user - User for the JWT
  */
-export const genIdToken = (user: IUser) => {
+export const genIdToken = (user: IUser): string => {
   return signJWT({
     iat: Date.now(),
-    exp: Date.now() + 15 * 60,
-    sub: user._id,
+    exp: Date.now() + 5 * 60,
+    sub: user.id,
     username: user.username,
   });
 };
@@ -67,6 +77,6 @@ export const genIdToken = (user: IUser) => {
  *
  * @param length - Length of refresh token. 32 default
  */
-export const genRefreshToken = (length: number = 32) => {
+export const genRefreshToken = (length: number = 32): string => {
   return nanoid.nanoid(length);
 };

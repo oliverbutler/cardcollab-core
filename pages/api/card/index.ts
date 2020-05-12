@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import dbConnect from "../../../middlewares/db";
+import dbConnect from "middlewares/db";
 
 const handler = async (req, res) => {
   switch (req.method) {
