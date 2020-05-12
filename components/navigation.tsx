@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { useContext } from "react";
-import AppContext from "../context/appContext";
+import { AccountContext } from "context/account";
 import styles from "./navigation.module.scss";
 import { capitalize } from "../util/functions";
 import { useRouter } from "next/router";
 
 function Navigation() {
-  const { state, dispatch } = useContext(AppContext);
+  const { state, dispatch } = useContext(AccountContext);
   const { user, loading } = state;
+
   const router = useRouter();
 
   return (
@@ -34,20 +35,24 @@ function Navigation() {
           (user ? (
             router.pathname === "/profile" ? (
               <li className={styles.logout}>
-                <Link href="/api/auth0/logout">
-                  <a>Logout</a>
+                <Link href="/">
+                  <a onClick={() => dispatch({ type: "LOG_OUT" })}>Logout</a>
                 </Link>
               </li>
             ) : (
               <li className={styles.navButton}>
                 <Link href="/profile">
-                  <a>Welcome {capitalize(state.user.nickname)}</a>
+                  <a>Welcome {capitalize(state.user.given_name)}</a>
                 </Link>
               </li>
             )
+          ) : router.pathname === "/login" ? (
+            <></>
           ) : (
             <li className={styles.navButton}>
-              <a href="/api/auth0/login">Login</a>
+              <Link href="login">
+                <a>Login</a>
+              </Link>
             </li>
           ))}
       </ul>
