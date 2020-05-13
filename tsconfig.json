@@ -20,7 +20,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "context/appContext.jsx",
-    "pages/status.jsx"
+    "pages/register.jsx",
+    "pages/register.jsx",
+    "pages/api/test.js"
   ]
 }

@@ -1,8 +1,9 @@
+//@ts-nocheck
 import React, { useState } from "react";
-import UserPool from "util/cognito/userPool";
-import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import { getToast } from "util/functions";
 import { useRouter } from "next/router";
+import Auth from "@aws-amplify/auth";
+import { SignUpParams } from "@aws-amplify/auth/lib-esm/types";
 
 export default () => {
   const router = useRouter();
@@ -14,36 +15,38 @@ export default () => {
   const [familyName, setFamilyName] = useState("");
   const [birthDate, setBirthDate] = useState("");
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
-    var attributeList: CognitoUserAttribute[] = [];
-    attributeList.push(
-      new CognitoUserAttribute({ Name: "preferred_username", Value: userName })
-    );
-    attributeList.push(
-      new CognitoUserAttribute({ Name: "birthdate", Value: birthDate })
-    );
-    attributeList.push(
-      new CognitoUserAttribute({ Name: "given_name", Value: givenName })
-    );
-    attributeList.push(
-      new CognitoUserAttribute({ Name: "family_name", Value: familyName })
-    );
+    const param: SignUpParams = {
+      username: email,
+      password,
+      attributes: {
+        given_name: givenName,
+        family_name: familyName,
+        birthdate: birthDate,
+        preferred_username: userName,
+      },
+    };
 
-    UserPool.signUp(email, password, attributeList, null, (err, data) => {
-      if (err) {
-        console.error(err);
-        getToast().fire({ icon: "error", title: "Invalid form" });
-      } else {
-        getToast().fire({ icon: "info", title: "Confirm your email" });
-        router.push("/");
-      }
-    });
+    try {
+      const user = await Auth.signUp(param);
+      console.log(user);
+      router.push("/");
+      getToast().fire({
+        icon: "success",
+        title: "Successfully Registered!",
+        text: "Please confirm your email",
+      });
+    } catch (err) {
+      console.log(err);
+      getToast().fire({ icon: "error", title: "Error with your form" });
+    }
   };
 
   return (
     <div style={{ textAlign: "center" }}>
+      <h1>Register</h1>
       <form onSubmit={onSubmit} className="login-form">
         <label>
           Email:
