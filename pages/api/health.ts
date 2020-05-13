@@ -1,5 +1,4 @@
 import getConfig from "next/config";
-import { capitalize } from "util/functions";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
