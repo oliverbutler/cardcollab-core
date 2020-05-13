@@ -1,17 +1,12 @@
 import Head from "next/head";
-import AppContext from "../context/appContext";
-import { useContext, useEffect } from "react";
-import Jumbotron from "../components/jumbotron";
-import styles from "../styles/index.module.scss";
+import Jumbotron from "components/jumbotron";
+import styles from "styles/index.module.scss";
 
 const index = () => {
-  const { state, dispatch } = useContext(AppContext);
-
   return (
     <div className="container">
       <Head>
         <title>CardCollab 📚</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Jumbotron></Jumbotron>
