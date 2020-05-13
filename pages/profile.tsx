@@ -16,7 +16,7 @@ function ProfileCard({ user }) {
           alt="user picture"
           style={{ width: "20em" }}
         />
-        <p>Username: {user.username}</p>
+        <p>Username: {user.preferred_username}</p>
         <p>
           Name:{" "}
           {capitalize(user.given_name) + " " + capitalize(user.family_name)}
