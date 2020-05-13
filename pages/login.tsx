@@ -1,12 +1,11 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { AccountContext } from "context/account";
 import { useContext } from "react";
 import Router from "next/router";
-import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import Pool from "util/cognito/userPool";
-import Swal from "sweetalert2";
 import { getToast } from "util/functions";
 import Link from "next/link";
+import Auth from "@aws-amplify/auth";
 
 export default () => {
   const { state, dispatch } = useContext(AccountContext);
@@ -14,45 +13,43 @@ export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const user = new CognitoUser({
-      Username: email,
-      Pool: Pool,
-    });
-    const authDetails = new AuthenticationDetails({
-      Username: email,
-      Password: password,
-    });
 
-    user.authenticateUser(authDetails, {
-      onSuccess: (data) => {
-        Router.push("/");
-        console.log("onSuccess:", data);
-        //@ts-ignore
-        var user = data.getIdToken().payload;
-        dispatch({ type: "LOG_IN", payload: user });
-      },
-
-      onFailure: (err) => {
-        console.error("onFailure:", err);
-        getToast().fire({
-          icon: "error",
-          title: "Incorrect Email or Password",
-        });
-      },
-
-      newPasswordRequired: (data) => {
-        console.log("newPasswordRequired:", data);
-
-        getToast().fire(
-          "We have emailed you.",
-          "You need a new password, we have emailed you",
-          "warning"
-        );
-      },
-    });
+    try {
+      const user = await Auth.signIn(email, password);
+      console.log(user);
+      dispatch({
+        type: "LOG_IN",
+        payload: (await Auth.currentUserInfo()).attributes,
+      });
+      getToast().fire({ icon: "success", title: "Logged In! 🎉" });
+    } catch (err) {
+      console.log(err);
+      if (err.name == "UserNotConfirmedException") {
+        getToast().fire({ icon: "warning", title: "Email not confirmed" });
+      } else {
+        getToast().fire({ icon: "error", title: "Invalid email or password" });
+      }
+    }
   };
+
+  // useEffect(() => {
+  //   Hub.listen("auth", ({ payload: { event, data } }) => {
+  //     switch (event) {
+  //       case "signIn":
+  //         console.log("success");
+  //         console.log(data);
+  //         break;
+  //       case "signOut":
+  //         console.log("failure");
+  //         break;
+  //       case "customOAuthState":
+  //         console.log("custom oauth state");
+  //         console.log(data);
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (state.user) Router.push("/");
@@ -61,6 +58,7 @@ export default () => {
   return (
     <div style={{ textAlign: "center" }}>
       <h1>Sign In</h1>
+
       <form onSubmit={onSubmit} className="login-form">
         <label>
           Email:
@@ -81,6 +79,9 @@ export default () => {
 
         <button type="submit">Login</button>
       </form>
+      {/* <button onClick={() => Auth.federatedSignIn({ provider: "Google" })}>  todo: get this working 
+         Open Google
+      </button> */}
       <Link href="/register">
         <a>Or Register</a>
       </Link>
