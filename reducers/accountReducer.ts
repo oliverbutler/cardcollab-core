@@ -1,5 +1,5 @@
-import Pool from "util/cognito/userPool";
 import { getToast } from "util/functions";
+import { Auth } from "aws-amplify";
 
 const AccountReducer = (prevState, action) => {
   console.log(`🔒 Action `, action);
@@ -20,10 +20,7 @@ const AccountReducer = (prevState, action) => {
         user: action.payload,
       };
     case "LOG_OUT":
-      const user = Pool.getCurrentUser();
-      if (user) {
-        user.signOut();
-      }
+      Auth.signOut();
       getToast().fire({
         icon: "success",
         title: "Logged Out",
