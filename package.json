@@ -8,8 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-amplify/auth": "^3.2.6",
     "amazon-cognito-identity-js": "^4.2.3",
-    "aws-sdk": "^2.674.0",
+    "aws-sdk": "^2.675.0",
     "camelcase": "^6.0.0",
     "camelcase-keys": "^6.2.2",
     "classnames": "^2.2.6",
