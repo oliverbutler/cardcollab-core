@@ -17,7 +17,7 @@ function Navigation() {
         <li>
           <Link href="/">
             <a>
-              <img src="/logo.svg" alt="CardCollab Logo" />
+              <img id="exclude" src="/logo.svg" alt="CardCollab Logo" />
             </a>
           </Link>
         </li>
@@ -36,13 +36,17 @@ function Navigation() {
             router.pathname === "/profile" ? (
               <li className={styles.logout}>
                 <Link href="/">
-                  <a onClick={() => dispatch({ type: "LOG_OUT" })}>Logout</a>
+                  <a id="exclude" onClick={() => dispatch({ type: "LOG_OUT" })}>
+                    Logout
+                  </a>
                 </Link>
               </li>
             ) : (
               <li className={styles.navButton}>
                 <Link href="/profile">
-                  <a>Welcome {capitalize(state.user.given_name)}</a>
+                  <a id="exclude">
+                    Welcome {capitalize(state.user.given_name)}
+                  </a>
                 </Link>
               </li>
             )
@@ -51,7 +55,7 @@ function Navigation() {
           ) : (
             <li className={styles.navButton}>
               <Link href="login">
-                <a>Login</a>
+                <a id="exclude">Login</a>
               </Link>
             </li>
           ))}
