@@ -43,7 +43,7 @@ img {
 }
 
 main {
-  padding: 0 15rem;
+  padding: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -133,7 +133,6 @@ code {
 
 @media (max-width: 600px) {
   .grid {
-    width: 100%;
     flex-direction: column;
   }
 }
@@ -141,7 +140,6 @@ code {
 div.DraftEditor-root {
   border: 1px solid #000;
   height: 200px;
-  width: 300px;
   overflow-y: auto;
 }
 div.DraftEditor-editorContainer,
