@@ -1,3 +1,5 @@
+@import "form.scss";
+
 html,
 body {
   padding: 0;
@@ -7,6 +9,10 @@ body {
   line-height: 1.6;
   font-size: 18px;
   background-color: #fefdff;
+}
+
+.m {
+  font-family: Montserrat;
 }
 
 * {
@@ -29,19 +35,19 @@ img {
 
 .container {
   min-height: 100vh;
-  padding: 0 0.5rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
 }
 
 main {
-  padding: 5rem 0;
+  padding: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
 }
 
@@ -127,7 +133,6 @@ code {
 
 @media (max-width: 600px) {
   .grid {
-    width: 100%;
     flex-direction: column;
   }
 }
@@ -135,7 +140,6 @@ code {
 div.DraftEditor-root {
   border: 1px solid #000;
   height: 200px;
-  width: 300px;
   overflow-y: auto;
 }
 div.DraftEditor-editorContainer,
