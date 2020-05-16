@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import { isEmpty } from "@aws-amplify/core";
 /**
  * Capitalize a String
  *
@@ -39,3 +40,22 @@ export function getToast() {
     },
   });
 }
+
+/**
+ * Simple version of a validation function, checks all parts are present
+ *
+ * @param body - req.body
+ * @param types - array of keys that should be present on req.body
+ */
+export const validateBody = (body: {}, types: string[]) => {
+  var errors = [];
+
+  types.forEach((type) => {
+    var error = {};
+    if (!body[type]) error["error"] = type + " is missing";
+
+    if (!isEmpty(error)) errors.push(error);
+  });
+
+  if (!isEmpty(errors)) return errors;
+};
