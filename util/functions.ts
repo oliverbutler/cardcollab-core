@@ -27,10 +27,13 @@ export function parseJwt(token) {
   }
 }
 
+/**
+ * Return a Swal toast in the bottom-right
+ */
 export function getToast() {
   return Swal.mixin({
     toast: true,
-    position: "top-end",
+    position: "bottom-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,

@@ -7,7 +7,6 @@ export const awsConfig = {
     region: "eu-west-2",
 
     // OPTIONAL - Amazon Cognito Federated Identity Pool Region
-    // Required only if it's different from Amazon Cognito Region
     identityPoolRegion: "eu-west-2",
 
     // OPTIONAL - Amazon Cognito User Pool ID
