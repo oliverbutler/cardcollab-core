@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import nanoid from "nanoid";
 import AWS from "aws-sdk";
 
 AWS.config.update({
@@ -19,6 +19,10 @@ export interface IAcl {
   };
 }
 
+export interface IConfig {
+  return: boolean;
+}
+
 /**
  * Create a new Deck
  *
@@ -33,9 +37,10 @@ export const createDeck = (
   user: string,
   subject: string,
   module: string,
-  acl: IAcl = [{ type: "group", id: "public", read: true, write: false }]
+  acl: IAcl = [{ type: "group", id: "public", read: true, write: false }],
+  config: IConfig = { return: false }
 ) => {
-  var deckID = uuidv4();
+  var deckID = nanoid.nanoid();
 
   var params: AWS.DynamoDB.DocumentClient.TransactWriteItemsInput = {
     TransactItems: [
@@ -48,7 +53,7 @@ export const createDeck = (
             title,
             user,
             acl,
-            data: `review#0`,
+            var1: `review#0`,
           },
         },
       },
@@ -58,7 +63,7 @@ export const createDeck = (
           Item: {
             partitionKey: `deck#${deckID}`,
             sortKey: `deck#${module}`,
-            data: `review#0`,
+            var1: `review#0`,
           },
         },
       },
@@ -68,7 +73,7 @@ export const createDeck = (
           Item: {
             partitionKey: `deck#${deckID}`,
             sortKey: `deck#${subject}`,
-            data: `review#0`,
+            var1: `review#0`,
           },
         },
       },
@@ -196,8 +201,6 @@ export const updateDeckSubject = async (
       console.log("updateDeckSubject failed");
     });
 
-  console.log(oldItem);
-
   var deleteParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
     TableName: "CardCollab",
     Key: {
@@ -218,7 +221,7 @@ export const updateDeckSubject = async (
     Item: {
       partitionKey: `deck#${deckID}`,
       sortKey: subject ? `deck#${subject}` : oldItem["subject"],
-      data: score ? `score#${score}` : oldItem["data"],
+      var1: score ? `review#${score}` : oldItem["var1"],
     },
   };
   return docClient.put(putParams).promise();
@@ -272,7 +275,7 @@ export const updateDeckModule = async (
     Item: {
       partitionKey: `deck#${deckID}`,
       sortKey: module ? `deck#${module}` : oldItem["module"],
-      data: score ? `score#${score}` : oldItem["data"],
+      var1: score ? `review#${score}` : oldItem["var1"],
     },
   };
   return docClient.put(putParams).promise();
