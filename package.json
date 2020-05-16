@@ -31,7 +31,8 @@
     "sass": "^1.26.5",
     "serverless-next.js": "^1.11.5",
     "sweetalert2": "^9.10.13",
-    "sweetalert2-react-content": "^3.0.1"
+    "sweetalert2-react-content": "^3.0.1",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
