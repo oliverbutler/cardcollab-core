@@ -1,5 +1,5 @@
 import { getToast } from "util/functions";
-import { Auth } from "aws-amplify";
+import { Auth } from "@aws-amplify/auth";
 
 const AccountReducer = (prevState, action) => {
   console.log(`🔒 Action `, action);
