@@ -5,6 +5,7 @@ import Head from "next/head";
 import React from "react";
 import AccountProvider from "context/account";
 import Wrapper from "components/wrapper";
+
 const App = ({ Component, pageProps }) => {
   return (
     <AccountProvider>
@@ -16,16 +17,13 @@ const App = ({ Component, pageProps }) => {
             rel="stylesheet"
             type="text/css"
           />
-          <script
-            src="https://kit.fontawesome.com/d3739899ee.js"
-            crossOrigin="anonymous"
-          ></script>
         </Head>
         <Navigation />
         <div className="section">
           <Component />
         </div>
         <Footer />
+        <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
       </Wrapper>
     </AccountProvider>
   );
