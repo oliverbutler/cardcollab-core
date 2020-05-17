@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import nanoid from "nanoid";
 import AWS from "aws-sdk";
 
 AWS.config.update({
@@ -19,7 +19,7 @@ export const addCard = (deckID: string, question: string, answer: string) => {
     TableName: "CardCollab",
     Item: {
       partitionKey: `deck#${deckID}`,
-      sortKey: "card#" + uuidv4(),
+      sortKey: "card#" + nanoid.nanoid(),
       question: question,
       answer: answer,
     },

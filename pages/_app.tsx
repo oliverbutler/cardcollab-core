@@ -10,19 +10,21 @@ const App = ({ Component, pageProps }) => {
   return (
     <AccountProvider>
       <Wrapper>
-        <header>
-          <Head>
-            <link
-              href="https://fonts.googleapis.com/css?family=Montserrat"
-              rel="stylesheet"
-              type="text/css"
-            />
-            <meta name="CardCollab is a revolutionary new way to collaborate with friends to create flashcards and notes"></meta>
-          </Head>
-          <Navigation />
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Montserrat"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <meta name="CardCollab is a revolutionary new way to collaborate with friends to create flashcards and notes"></meta>
+        </Head>
+        <Navigation />
+        <div className="section">
           <Component />
-        </header>
+        </div>
         <Footer />
+        <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
       </Wrapper>
     </AccountProvider>
   );
