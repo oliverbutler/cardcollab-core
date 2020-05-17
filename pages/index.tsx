@@ -23,7 +23,7 @@ const index = () => {
               By Students, for Students
             </p>
           </div>
-          <img src="/books.svg"></img>
+          <img src="/books.svg" alt="image of books"></img>
         </div>
       </main>
     </div>
