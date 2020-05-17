@@ -1,5 +1,9 @@
 const browse = () => {
-  return <h1>Browse Cards</h1>;
+  return (
+    <div className="container">
+      <h1 className="title">Browse Cards</h1>
+    </div>
+  );
 };
 
 export default browse;
