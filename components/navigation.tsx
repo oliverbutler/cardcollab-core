@@ -17,7 +17,7 @@ function Navigation() {
         <li>
           <Link href="/">
             <a>
-              <img id="exclude" src="/logo.svg" alt="CardCollab Logo" />
+              <img alt="logo" id="exclude" src="/logo.svg" alt="CardCollab Logo" />
             </a>
           </Link>
         </li>
