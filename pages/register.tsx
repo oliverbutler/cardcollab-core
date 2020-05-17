@@ -8,9 +8,12 @@ import React, { useState } from "react";
 import { getToast } from "util/functions";
 import { motion } from "framer-motion";
 import classNames from "classnames";
+import { logEvent, logPageView } from "util/analytics";
 
 export default () => {
   const router = useRouter();
+
+  logPageView("/register");
 
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
@@ -41,6 +44,7 @@ export default () => {
       console.log(user);
       setLoading(false);
       router.push("/login");
+      logEvent("register", email + " registered");
       getToast().fire({
         icon: "success",
         title: "Successfully Registered!",

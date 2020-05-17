@@ -1,9 +1,8 @@
+import { logPageView } from "util/analytics";
 const browse = () => {
-  return (
-    <div className="container">
-      <h1 className="title">Browse Cards</h1>
-    </div>
-  );
+  logPageView("/browse");
+
+  return <h1>Browse Cards</h1>;
 };
 
 export default browse;
