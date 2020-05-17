@@ -7,10 +7,22 @@ AWS.config.update({
 
 var docClient = new AWS.DynamoDB.DocumentClient();
 
+var cognito = new AWS.CognitoIdentityCredentials();
+
+/* -------------------------------------------------------------------------- */
+/*                              Type Definitions                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Interface for DB Util Config
+ */
 export interface IConfig {
   return: boolean;
 }
 
+/**
+ * Interface for a user
+ */
 export interface IUser {
   userID: string;
   givenName: string;
@@ -31,13 +43,16 @@ export interface IUser {
  * @param familyName
  * @param username
  * @param email
+ * @param dateOfBirth
  * @param role - optional role, defaults to ['student]
+ *
  */
 export const createUser = (
   givenName: string,
   familyName: string,
   username: string,
   email: string,
+  dateOfBirth: string,
   role: string[] = ["student"]
 ) => {
   const userID = nanoid.nanoid();
@@ -52,6 +67,7 @@ export const createUser = (
             sortKey: `user#${userID}`,
             givenName: givenName,
             familyName: familyName,
+            dateOfBirth: dateOfBirth,
             role: role,
           },
         },
@@ -83,7 +99,7 @@ export const createUser = (
 };
 
 /**
- * Get a user given their userID
+ * Get a user given their userID todo: Look into using batch for better speed
  *
  * @param userID
  */
@@ -179,82 +195,42 @@ export const getUserByEmail = async (
     });
 };
 
-/* -------------------------------------------------------------------------- */
-/*                                    Auth                                    */
-/* -------------------------------------------------------------------------- */
-
 /**
- * Set the local auth for a user
+ * Returns user matching the username given
  *
- * @param userID
- * @param secret
- * @param twoFactor
- * @param attempts
- * @param timeout
+ * @param username - username to query
  */
-export const setUserAuthLocal = async (
-  userID: string,
-  secret: string = undefined,
-  twoFactor: string = undefined,
-  attempts: string = undefined,
-  timeout: string = undefined
+export const getUserByUsername = async (
+  username: string,
+  config: IConfig = { return: true }
 ) => {
-  var exp = "set ";
-  if (secret) exp += "secret = :s, ";
-  if (twoFactor) exp += "twoFactor = :t, ";
-  if (attempts) exp += "attempts = :a, ";
-  if (timeout) exp += "timeout = :ti, ";
-
-  exp = exp.substr(0, exp.length - 2);
-
-  var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+  var params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "CardCollab",
-    Key: {
-      partitionKey: `user#${userID}`,
-      sortKey: `user#auth#local`,
-    },
-    UpdateExpression: exp,
+    IndexName: "GSI1",
+    KeyConditionExpression: "sortKey = :sk and var1 = :username",
     ExpressionAttributeValues: {
-      ":s": secret,
-      ":t": twoFactor,
-      ":a": attempts,
-      ":ti": timeout,
+      ":sk": "user#username",
+      ":username": username,
     },
   };
   return await docClient
-    .update(params)
+    .query(params)
     .promise()
-    .then(() => {
-      return "Success";
-    })
-    .catch((err) => {
-      console.log(err);
-      return new Error("Cant update user auth");
-    });
-};
+    .then(async (data) => {
+      const userID = data.Items[0].partitionKey.substring(5);
 
-/**
- * Get all user auth info
- *
- * @param userID
- */
-export const getUserAuth = async (userID: string) => {
-  var query: AWS.DynamoDB.DocumentClient.QueryInput = {
-    TableName: "CardCollab",
-    KeyConditionExpression: "partitionKey = :pk and begins_with(sortKey, :sk)",
-    ExpressionAttributeValues: {
-      ":pk": `user#${userID}`,
-      ":sk": "user#auth",
-    },
-  };
-  return await docClient
-    .query(query)
-    .promise()
-    .then((res) => {
-      return res.Items;
+      if (config.return)
+        return await getUserByID(userID)
+          .then((data) => {
+            return data;
+          })
+          .catch((err) => {
+            console.log(err);
+            return new Error("cant find user by id");
+          });
+      else return userID;
     })
-    .catch((err) => {
-      console.log(err);
-      return new Error("Cant get user auth");
+    .catch(() => {
+      return new Error("Cant find user by username");
     });
 };

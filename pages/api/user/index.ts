@@ -20,7 +20,6 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
     case "GET":
       try {
         const user = await getUserByEmail(req.body.email, { return: true });
-        console.log(user);
         return res.send(user);
       } catch (error) {
         return res.send(error);
