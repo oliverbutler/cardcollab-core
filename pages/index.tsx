@@ -4,6 +4,7 @@ import styles from "styles/index.module.scss";
 
 const index = () => {
   return (
+    
     <div className="container">
       <Head>
         <title>CardCollab 📚</title>
