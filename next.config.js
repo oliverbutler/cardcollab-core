@@ -2,7 +2,6 @@
 
 var URL = "http://localhost:3000";
 if (process.env.URL) URL = process.env.URL;
-if (process.env.VERCEL_URL) URL = "https://cardcollab.com";
 
 module.exports = {
   target: "serverless",
