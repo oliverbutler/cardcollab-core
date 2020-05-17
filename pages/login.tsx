@@ -60,7 +60,7 @@ export default () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
+                    <ion-icon name="mail-outline"></ion-icon>
                   </span>
                 </div>
               </div>
@@ -74,7 +74,7 @@ export default () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-key"></i>
+                    <ion-icon name="key-outline"></ion-icon>
                   </span>
                 </div>
               </div>

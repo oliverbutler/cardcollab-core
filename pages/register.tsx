@@ -73,7 +73,7 @@ export default () => {
                         onChange={(e) => setGivenName(e.target.value)}
                       />
                       <span className="icon is-small is-left">
-                        <i className="fas fa-user"></i>
+                        <ion-icon name="person-outline"></ion-icon>
                       </span>
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export default () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-envelope"></i>
+                    <ion-icon name="mail-outline"></ion-icon>
                   </span>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default () => {
                     onChange={(e) => setUserName(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-hashtag"></i>
+                    <ion-icon name="at-outline"></ion-icon>
                   </span>
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default () => {
                     onChange={(e) => setBirthDate(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-birthday-cake"></i>
+                    <ion-icon name="calendar-outline"></ion-icon>
                   </span>
                 </div>
               </div>
@@ -142,7 +142,7 @@ export default () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <span className="icon is-small is-left">
-                    <i className="fas fa-key"></i>
+                    <ion-icon name="key-outline"></ion-icon>
                   </span>
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -175,7 +175,7 @@ export default () => {
                       onChange={(e) => setPassword2(e.target.value)}
                     />
                     <span className="icon is-small is-left">
-                      <i className="fas fa-key"></i>
+                      <ion-icon name="key-outline"></ion-icon>
                     </span>
                   </div>
                 </div>
