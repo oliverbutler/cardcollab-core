@@ -17,6 +17,7 @@ const App = ({ Component, pageProps }) => {
             rel="stylesheet"
             type="text/css"
           />
+          <meta name="CardCollab is a revolutionary new way to collaborate with friends to create flashcards and notes"></meta>
         </Head>
         <Navigation />
         <div className="section">

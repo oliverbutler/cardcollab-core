@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 
 const index = () => {
   return (
+    
     <div className="container">
       <Head>
         <title>CardCollab 📚</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <img src="logo-full.svg"></img>
+      <img alt="logo" src="logo-full.svg"></img>
 
       <div className="columns" style={{ alignItems: "center" }}>
         <div className="column is-two-thirds-tablet">
@@ -29,7 +30,7 @@ const index = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ ease: "easeOut", duration: 0.5 }}
           >
-            <img src="/books.svg"></img>
+            <img alt="book image" src="/books.svg"></img>
           </motion.div>
         </div>
       </div>
