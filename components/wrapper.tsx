@@ -14,7 +14,6 @@ const Wrapper = ({ children }) => {
       try {
         const user = await Auth.currentUserInfo();
         dispatch({ type: "FOUND_SESSION", payload: user.attributes });
-        console.log(state);
       } catch (err) {
         console.log("no user");
       }
