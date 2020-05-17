@@ -4,18 +4,20 @@ import { AccountContext } from "context/account";
 import { useContext } from "react";
 import Router from "next/router";
 import { getToast } from "util/functions";
-import Link from "next/link";
 import Auth from "@aws-amplify/auth";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default () => {
   const { state, dispatch } = useContext(AccountContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const user = await Auth.signIn(email, password);
       console.log(user);
@@ -23,9 +25,11 @@ export default () => {
         type: "LOG_IN",
         payload: (await Auth.currentUserInfo()).attributes,
       });
+      setLoading(false);
       getToast().fire({ icon: "success", title: "Logged In! 🎉" });
     } catch (err) {
       console.log(err);
+      setLoading(false);
       if (err.name == "UserNotConfirmedException") {
         getToast().fire({ icon: "warning", title: "Email not confirmed" });
       } else {
@@ -34,57 +38,71 @@ export default () => {
     }
   };
 
-  // useEffect(() => {
-  //   Hub.listen("auth", ({ payload: { event, data } }) => {
-  //     switch (event) {
-  //       case "signIn":
-  //         console.log("success");
-  //         console.log(data);
-  //         break;
-  //       case "signOut":
-  //         console.log("failure");
-  //         break;
-  //       case "customOAuthState":
-  //         console.log("custom oauth state");
-  //         console.log(data);
-  //     }
-  //   });
-  // }, []);
-
   useEffect(() => {
-    if (state.user) Router.push("/");
+    if (state.user) Router.push("/profile");
   }, [state.user]);
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Sign In</h1>
+    <div className="container">
+      <div className="columns is-centered is-vcentered is-mobile">
+        <div className="column is-narrow">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h1 className="title">Log In</h1>
 
-      <form onSubmit={onSubmit} className="login-form">
-        <label>
-          Email:
-          <input
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
+            <form>
+              <div className="field">
+                <label className="label">Email</label>
+                <div className="control has-icons-left ">
+                  <input
+                    className="input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <span className="icon is-small is-left">
+                    <ion-icon name="mail-outline"></ion-icon>
+                  </span>
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Password</label>
+                <div className="control has-icons-left ">
+                  <input
+                    className="input"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <span className="icon is-small is-left">
+                    <ion-icon name="key-outline"></ion-icon>
+                  </span>
+                </div>
+              </div>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-
-        <button type="submit">Login</button>
-      </form>
-      {/* <button onClick={() => Auth.federatedSignIn({ provider: "Google" })}>  todo: get this working 
-         Open Google
-      </button> */}
-      <Link href="/register">
-        <a>Or Register</a>
-      </Link>
+              <div className="field is-grouped">
+                <div className="control">
+                  <button
+                    className={
+                      "button is-link " + (loading ? "is-loading" : "")
+                    }
+                    onClick={onSubmit}
+                    disabled={!email || !password}
+                  >
+                    Submit
+                  </button>
+                </div>
+                <div className="control">
+                  <Link href="/register">
+                    <button className="button is-link is-light">
+                      Or Register
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

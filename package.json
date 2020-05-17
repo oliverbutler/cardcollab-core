@@ -6,15 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "snyk-protect": "snyk protect",
-    "prepare": "yarn run snyk-protect"
+    "snyk-protect": "snyk protect"
   },
   "dependencies": {
     "@aws-amplify/auth": "^3.2.6",
     "@aws-amplify/core": "^3.2.6",
     "aws-sdk": "^2.675.0",
     "bcryptjs": "^2.4.3",
+    "bulma": "^0.8.2",
     "classnames": "^2.2.6",
+    "framer-motion": "^1.11.0",
     "install": "^0.13.0",
     "isomorphic-fetch": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
