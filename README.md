@@ -29,7 +29,7 @@ This project is currently in **early alpha**, we are aiming for a beta by octobe
 ### Backend
 
 - [Next.js API](https://nextjs.org/docs/api-routes/introduction) - A serverless compatible alternative to Express for the API
-- [AWS DynamoDB](https://aws.amazon.com/dynamodb/) - Blazing fast and flexible NoSQL managed database.
+- [AWS DynamoDB](https://aws.amazon.com/dynamodb/) - Fast and scaleable NoSQL managed database.
 - [AWS Cognito](https://aws.amazon.com/cognito/) - Handles authentication, we are developing our own proprietary [feature/auth](https://github.com/CardCollab/cardcollab-core/tree/feature/auth)
 - [AWS S3](https://aws.amazon.com/s3/) - Storing static pages and user images for their cards
 
