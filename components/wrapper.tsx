@@ -15,7 +15,7 @@ const Wrapper = ({ children }) => {
       initGA();
       window.GA_INITIALIZED = true;
     }
-    logPageView();
+    logPageView("/");
   }, []);
 
   useEffect(() => {

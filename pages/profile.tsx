@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AccountContext } from "context/account";
 import { capitalize } from "util/functions";
 import { motion } from "framer-motion";
+import { logPageView } from "util/analytics";
 
 function ProfileCard({ user }) {
   return (
@@ -31,6 +32,8 @@ function ProfileCard({ user }) {
 
 function Profile() {
   const { state, dispatch } = useContext(AccountContext);
+
+  logPageView("/profile");
 
   return (
     <div className="container">
