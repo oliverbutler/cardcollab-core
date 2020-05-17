@@ -7,6 +7,7 @@ import { getToast } from "util/functions";
 import Auth from "@aws-amplify/auth";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { logEvent, logPageView } from "util/analytics";
 
 export default () => {
   const { state, dispatch } = useContext(AccountContext);
@@ -14,6 +15,8 @@ export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  logPageView("/login");
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,6 +29,7 @@ export default () => {
         payload: (await Auth.currentUserInfo()).attributes,
       });
       setLoading(false);
+      logEvent("login", email + " logged in");
       getToast().fire({ icon: "success", title: "Logged In! 🎉" });
     } catch (err) {
       console.log(err);
