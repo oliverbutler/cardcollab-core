@@ -42,7 +42,7 @@ function Navigation() {
       <div className="navbar-brand">
         <Link href="/">
           <a onClick={() => setIsActive(false)}>
-            <img src="logo.svg" width="50" height="50" />
+            <img alt="brand logo" src="logo.svg" width="50" height="50" />
           </a>
         </Link>
 
