@@ -2,6 +2,7 @@
 cardcollab:
   component: serverless-next.js
   inputs:
+    policy: "arn:aws:iam::909497274400:policy/CardCollab_API_Lambda"
     bucketName: cardcollab-bucket
     domain: "cardcollab.com"
     build:

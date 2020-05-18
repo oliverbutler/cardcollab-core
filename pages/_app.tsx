@@ -12,11 +12,6 @@ const App = ({ Component, pageProps }) => {
       <Wrapper>
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link
-            href="https://fonts.googleapis.com/css?family=Montserrat"
-            rel="stylesheet"
-            type="text/css"
-          />
           <meta
             name="description"
             content="CardCollab is a revolutionary new way to collaborate with friends to create flashcards and notes"
