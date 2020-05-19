@@ -14,27 +14,9 @@ $link: $green;
 $body-background-color: $white;
 
 @import "../node_modules/bulma/bulma.sass";
+@import "./navigation.scss";
 
 .section {
   min-height: 100vh;
-}
-
-.navbar-menu {
-  animation: navAnimOpen 0.2s ease-in-out;
-}
-
-@keyframes navAnimOpen {
-  0% {
-    display: none;
-    opacity: 0;
-    max-height: 0;
-  }
-  1% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-    max-height: 396px;
-  }
+  padding: 24px;
 }
