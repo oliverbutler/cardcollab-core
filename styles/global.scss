@@ -13,8 +13,8 @@ $link: $green;
 // Update some of Bulma's component variables
 $body-background-color: $white;
 
-@import "./navigation.scss";
 @import "../node_modules/bulma/bulma.sass";
+@import "./navigation.scss";
 
 .section {
   min-height: 100vh;
