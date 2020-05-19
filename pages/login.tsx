@@ -104,6 +104,11 @@ export default () => {
                 </div>
               </div>
             </form>
+            <Link href="/forgotten">
+              <a className="button is-text" style={{ marginTop: "1em" }}>
+                Forgot your password
+              </a>
+            </Link>
           </motion.div>
         </div>
       </div>
