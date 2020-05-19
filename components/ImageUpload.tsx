@@ -1,14 +1,15 @@
 import { nanoid } from "nanoid"
 
-function compressImage (base64) {
+function compressImage (base64) // TODO: this compression code seem v basic might need improved
+{
     const canvas = document.createElement('canvas')
     const img = document.createElement('img')
   
     return new Promise((resolve, reject) => {
       img.onload = function () {
         let width = img.width
-        let height = img.height
-        const maxHeight = 200
+        let height = img.height // this might have to change depenant on use
+        const maxHeight = 200   // for flash card imo I think it is fine but will see
         const maxWidth = 200
   
         if (width > height) {
@@ -45,8 +46,9 @@ function compressImage (base64) {
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME,
-        Key: nanoid + '.jpg', // File name you want to save as in S3
-        Body: fileContent
+        Key: nanoid() + '.jpg', // File name you want to save as in S3
+        Body: fileContent // nano id 
+        ACL: 'public-read'
     };
 
     // Uploading files to the bucket
