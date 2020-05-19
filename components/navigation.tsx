@@ -14,24 +14,26 @@ function Navigation() {
 
   const router = useRouter();
 
-  // const wrapperRef = useRef(null);
+  const wrapperRef = useRef(null);
 
-  // useEffect(() => {
-
-  //   function handleClickOutside(event) {
-  //     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-  //       setIsActive(false);
-  //     }
-  //   }
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     // Unbind the event listener on clean up
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [wrapperRef]);
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsActive(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef]);
 
   return (
-    <nav className={"navigation " + (isActive ? "active" : "")}>
+    <nav
+      className={"navigation " + (isActive ? "active" : "")}
+      ref={wrapperRef}
+    >
       <div className="navigation-top">
         <div className="navigation-brand">
           <Link href="/">
