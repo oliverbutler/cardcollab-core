@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "bulma": "^0.8.2",
     "classnames": "^2.2.6",
+    "csv-parser": "^2.3.2",
     "framer-motion": "^1.11.0",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
