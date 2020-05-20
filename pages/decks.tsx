@@ -1,6 +1,9 @@
 // @ts-nocheck
 import { logPageView } from "util/analytics";
+import { addCard } from "util/db/card";
 const decks = () => {
+
+  
   const decks = [
     {
       title: "Algorithms and Design",
@@ -47,30 +50,39 @@ const decks = () => {
       <div className="columns is-multiline">
         {decks.map((card) => (
           <div className="column is-half-tablet is-one-third-desktop is-one-quarter-widescreen">
+          <Deck c = {card}></Deck>
+          </div>
+          
+        ))}
+      </div>
+    </div>
+  );
+};
+
+function Deck (props)  {
+  return (
+    
             <div className="card" style={{ height: "100%" }}>
               <div className="card-image">
                 <figure className="image is-4by3">
                   <img
-                    src={card.url ? card.url : ""}
+                    src={props.c.url ? props.c.url : ""}
                     alt="Placeholder image"
                     height={300}
                   />
                 </figure>
               </div>
               <div className="card-content">
-                <h1 className="title is-4">{card.title}</h1>
+                <h1 className="title is-4">{props.c.title}</h1>
                 <p className="subtitle">
-                  @{card.author}
+                  @{props.c.author}
                   <span className="tag is-success is-light"> Admin</span>
                 </p>
 
-                <p>{card.description}</p>
+                <p>{props.c.description}</p>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+
   );
 };
 
