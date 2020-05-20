@@ -9,6 +9,7 @@ import { getToast } from "util/functions";
 import { motion } from "framer-motion";
 import classNames from "classnames";
 import { logEvent, logPageView } from "util/analytics";
+import blacklist from "the-big-username-blacklist";
 
 export default () => {
   const router = useRouter();
@@ -64,9 +65,16 @@ export default () => {
       });
       err = true;
     }
-
-    //
+    // username check
+    if (blacklist.validate(userName)) {
+      getToast().fire({
+        icon: "error",
+        title: "invalid username",
+      });
+      err = true;
+    }
     if (!err) {
+      //
       event.preventDefault();
       setLoading(true);
       const param: SignUpParams = {
