@@ -44,7 +44,7 @@ This project is currently in **early alpha**, we are aiming for a beta by octobe
 
 We are all MComp Computer Science studying at Newcastle University
 
-| <a href="https://www.linkedin.com/in/oliver-butler/">Oliver Butler </a> | Jonathan White                                            | Josh Dawson                                                 | Harry James                                                  |
+| <a href="https://www.linkedin.com/in/oliver-butler/">Oliver Butler </a> |  <a href="https://www.linkedin.com/in/jonathan-white-536353172/">Jonathan White</a>                                            | Josh Dawson                                                 | Harry James                                                  |
 | ----------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
 | <img src="https://github.com/oliverbutler.png" width="100"/>            | <img src="https://github.com/jwcode-uk.png" width="100"/> | <img src="https://github.com/joshrdawson.png" width="100"/> | <img src="https://github.com/harryjamesuk.png" width="100"/> |
 | Dev + Cloud                                                             | Developer                                                 | Developer                                                   | Developer                                                    |
