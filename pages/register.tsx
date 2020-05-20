@@ -26,34 +26,81 @@ export default () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    const param: SignUpParams = {
-      username: email,
-      password,
-      attributes: {
-        given_name: givenName,
-        family_name: familyName,
-        birthdate: birthDate,
-        preferred_username: userName,
-      },
-    };
-
-    try {
-      const user = await Auth.signUp(param);
-      console.log(user);
-      setLoading(false);
-      router.push("/login");
-      logEvent("register", email + " registered");
+    var err = false;
+    if (email & userName & familyName & birthDate & password & password2) {
       getToast().fire({
-        icon: "success",
-        title: "Successfully Registered!",
-        text: "Please confirm your email",
+        icon: "error",
+        title: "Fill all fields before submitting",
       });
-    } catch (err) {
-      console.log(err);
+      err = true;
+    }
+    // email verification
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(String(email).toLowerCase)) {
+      getToast().fire({
+        icon: "error",
+        title: "Invalid Email",
+      });
+      err = true;
+    }
+
+    // age verification
+    var year = new Date(birthDate);
+    year = year.getFullYear();
+    var date = new Date().getFullYear();
+    var dif = year - date;
+    if (dif < -100) {
+      getToast().fire({
+        icon: "error",
+        title: "Geez How old are you?!?",
+      });
+      err = true;
+    }
+
+    if (dif > 0) {
+      getToast().fire({
+        icon: "error",
+        title: "T-" + dif + " Years till your birth",
+      });
+      err = true;
+    }
+
+    //
+    if (!err) {
+      event.preventDefault();
+      setLoading(true);
+      const param: SignUpParams = {
+        username: email,
+        password,
+        attributes: {
+          given_name: givenName,
+          family_name: familyName,
+          birthdate: birthDate,
+          preferred_username: userName,
+        },
+      };
+
+      try {
+        const user = await Auth.signUp(param);
+        console.log(user);
+        setLoading(false);
+        router.push("/login");
+        logEvent("register", email + " registered");
+        getToast().fire({
+          icon: "success",
+          title: "Successfully Registered!",
+          text: "Please confirm your email",
+        });
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+        getToast().fire({
+          icon: "error",
+          title: "Error with your form",
+        });
+      }
+    } else {
       setLoading(false);
-      getToast().fire({ icon: "error", title: "Error with your form" });
     }
   };
 
@@ -72,7 +119,7 @@ export default () => {
                     <div className="control has-icons-left ">
                       <input
                         className="input"
-                        type="email"
+                        type="text"
                         value={givenName}
                         onChange={(e) => setGivenName(e.target.value)}
                       />
@@ -86,7 +133,7 @@ export default () => {
                     <div className="control  ">
                       <input
                         className="input"
-                        type="email"
+                        type="text"
                         value={familyName}
                         onChange={(e) => setFamilyName(e.target.value)}
                       />
@@ -117,6 +164,7 @@ export default () => {
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                   />
+
                   <span className="icon is-small is-left">
                     <ion-icon name="at-outline"></ion-icon>
                   </span>
