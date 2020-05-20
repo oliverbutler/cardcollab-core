@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { logPageView } from "util/analytics";
 import Link from "next/link";
+import { Deck } from "components/deckCard";
 
 const decks = () => {
   const decks = [
@@ -51,26 +52,7 @@ const decks = () => {
       <div className="columns is-multiline">
         {decks.map((card) => (
           <div className="column is-half-tablet is-one-third-desktop is-one-quarter-widescreen">
-            <div className="card" style={{ height: "100%" }}>
-              <div className="card-image">
-                <figure className="image is-4by3">
-                  <img
-                    src={card.url ? card.url : ""}
-                    alt="Placeholder image"
-                    height={300}
-                  />
-                </figure>
-              </div>
-              <div className="card-content">
-                <h1 className="title is-4">{card.title}</h1>
-                <p className="subtitle">
-                  @{card.author}
-                  <span className="tag is-success is-light"> Admin</span>
-                </p>
-
-                <p>{card.description}</p>
-              </div>
-            </div>
+            <Deck c={card}></Deck>
           </div>
         ))}
       </div>
