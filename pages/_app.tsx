@@ -6,6 +6,14 @@ import React from "react";
 import AccountProvider from "context/account";
 import Wrapper from "components/wrapper";
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "ion-icon";
+    }
+  }
+}
+
 const App = ({ Component, pageProps }) => {
   return (
     <AccountProvider>
