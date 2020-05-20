@@ -3,8 +3,6 @@ import { logPageView } from "util/analytics";
 import { addCard } from "util/db/card";
 import { Deck } from "components/deckCard";
 const decks = () => {
-
-  
   const decks = [
     {
       title: "Algorithms and Design",
@@ -51,15 +49,12 @@ const decks = () => {
       <div className="columns is-multiline">
         {decks.map((card) => (
           <div className="column is-half-tablet is-one-third-desktop is-one-quarter-widescreen">
-          <Deck c = {card}></Deck>
+            <Deck c={card}></Deck>
           </div>
-          
         ))}
       </div>
     </div>
   );
 };
-
-
 
 export default decks;
