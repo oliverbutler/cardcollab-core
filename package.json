@@ -11,10 +11,12 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.2.6",
     "@aws-amplify/core": "^3.2.6",
+    "autoprefixer": "^9.8.0",
     "aws-sdk": "^2.675.0",
     "bcryptjs": "^2.4.3",
     "bulma": "^0.8.2",
     "classnames": "^2.2.6",
+    "csv-parser": "^2.3.2",
     "framer-motion": "^1.11.0",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
@@ -24,6 +26,7 @@
     "next": "^9.4.1",
     "next-connect": "^0.6.6",
     "node-fetch": "^2.6.0",
+    "postcss-import": "^12.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-ga": "^2.7.0",
@@ -33,7 +36,8 @@
     "serverless-next.js": "^1.11.5",
     "snyk": "^1.320.3",
     "sweetalert2": "^9.10.13",
-    "sweetalert2-react-content": "^3.0.1"
+    "sweetalert2-react-content": "^3.0.1",
+    "tailwindcss": "^1.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
