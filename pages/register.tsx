@@ -29,17 +29,15 @@ export default () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const param: SignUpParams = {
-      username: email,
-      password,
-      attributes: {
-        given_name: givenName,
-        family_name: familyName,
-        birthdate: birthDate,
-        preferred_username: userName,
-      },
-    };
-    var response = RegisterValidation(param);
+    console.log(email, password, givenName);
+    var response = RegisterValidation(
+      email.toString(),
+      password.toString(),
+      familyName.toString(),
+      userName.toString(),
+      givenName.toString(),
+      birthDate
+    );
     if (response == true) {
       setLoading(false);
       router.push("/login");
