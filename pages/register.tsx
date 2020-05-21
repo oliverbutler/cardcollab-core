@@ -286,55 +286,43 @@ function checkEmail(val) {
 function EmailErrorMessage(props) {
   const error = props.error;
   if (error) {
-    return <EmailSucess />;
+    return <p class="help is-success">This email is valid</p>;
   }
-  return <EmailFail />;
-}
-function EmailSucess(props) {
-  return <p class="help is-success">This email is valid</p>;
-}
-
-function EmailFail(props) {
   return <p class="help is-danger">This email is invalid</p>;
 }
 
 function UsernameErrorMessage(props) {
   const error = props.error;
   if (error) {
-    return <UsernameSucess />;
+    return <p class="help is-success">This Username is valid</p>;
   }
-  return <UsernameFail />;
-}
-function UsernameSucess(props) {
-  return <p class="help is-success">This Username is valid</p>;
-}
 
-function UsernameFail(props) {
   return <p class="help is-danger">This Username is invalid</p>;
 }
 function DOBErrorMessage(props) {
   const error = props.error;
   if (error) {
-    return <DOBSucess />;
+    return <p class="help is-success">This DOB is valid</p>;
   }
-  return <DOBFail />;
-}
-function DOBSucess(props) {
-  return <p class="help is-success">This DOB is valid</p>;
-}
-
-function DOBFail(props) {
   return <p class="help is-danger">This DOB is invalid</p>;
 }
 function PWErrorMessage(props) {
   const val = props.val;
   if (val < 50) {
     return (
-      <p class="help is-danger">
-        Your password is weak try adding capitals, numbersc and symbols to it or
+      <p class="help is-danger" word-wrap="break-word">
+        Your password is weak try adding capitals, numbersand symbols to it or
         making it longer
       </p>
     );
+  } else if (val < 75) {
+    return (
+      <p class="help is-warning" word-wrap="break-word">
+        Your password is could be improved by adding capitals, numbersand
+        symbols to it
+      </p>
+    );
+  } else {
+    return <p class="help is-success">Your password is strong well done!!</p>;
   }
-  return false;
 }
