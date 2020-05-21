@@ -31,7 +31,13 @@ const schema = Joi.object().keys({
     .alphanum()
     .min(3)
     .max(30)
-    .required(),
+    .required()
+    .error(() => {
+      return {
+        message:
+          "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers.",
+      };
+    }),
 
   password: Joi.string()
     .pattern(
@@ -39,7 +45,13 @@ const schema = Joi.object().keys({
         "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])| (?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])"
       )
     )
-    .required(),
+    .required()
+    .error(() => {
+      return {
+        message:
+          "Please improve your password strength. This can be done by adding symbols, capitals, number or even just increasing it's length",
+      };
+    }),
 
   birthdate: Joi.string()
     .isoDate()
@@ -47,43 +59,53 @@ const schema = Joi.object().keys({
 
   email: Joi.string()
     .email({ tlds: { allow: false } })
-    .required(),
+    .required()
+    .error(() => {
+      return {
+        message:
+          "Email Incorrect. Your email is incorrect please double check this.",
+      };
+    }),
 });
 
 async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
-  if (pw1 == pw && bd < now && bd > cutoffDate) {
-    try {
-      const value = await schema.validateAsync({
-        email: email,
-        password: pw,
-        given_name: gn,
-        username: un,
-        familyName: fn,
-        birthdate: bd,
-      });
-
+  if (pw1 == pw) {
+    if (bd < now && bd > cutoffDate) {
       try {
-        const param: SignUpParams = {
-          username: email,
+        const value = await schema.validateAsync({
+          email: email,
           password: pw,
-          attributes: {
-            given_name: capitalize(gn, true),
-            family_name: capitalize(fn, true),
-            birthdate: bd,
-            preferred_username: capitalize(un, true),
-          },
-        };
-        const user = Auth.signUp(param);
-        console.log(user);
-        return true;
+          given_name: gn,
+          username: un,
+          familyName: fn,
+          birthdate: bd,
+        });
+
+        try {
+          const param: SignUpParams = {
+            username: email,
+            password: pw,
+            attributes: {
+              given_name: capitalize(gn, true),
+              family_name: capitalize(fn, true),
+              birthdate: bd,
+              preferred_username: capitalize(un, true),
+            },
+          };
+          const user = Auth.signUp(param);
+          console.log(user);
+          return true;
+        } catch (err) {
+          return err;
+        }
       } catch (err) {
         return err;
       }
-    } catch (err) {
-      return err;
+    } else {
+      return "DOB wrong";
     }
   } else {
-    return "password not equal";
+    return "passwords don't match";
   }
 }
 

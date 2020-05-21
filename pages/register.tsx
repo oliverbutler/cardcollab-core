@@ -51,7 +51,14 @@ export default () => {
     } else {
       console.log(response);
       setLoading(false);
-      getToast().fire({ icon: "error", title: "Error with your form" });
+      if (response == "DOB wrong") {
+        getToast().fire({ icon: "error", title: "Passwords do not match" });
+      } else if (response == "passwords don't match") {
+        getToast().fire({
+          icon: "error",
+          title: "Date of Birth is incorrect",
+        });
+      }
     }
   };
 
