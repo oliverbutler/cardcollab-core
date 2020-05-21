@@ -112,10 +112,12 @@ export default () => {
                 <label className="label">Email</label>
                 <div className="control has-icons-left">
                   <input
-                    className="input"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className={`${
+                      checkEmail(email) ? "input" : "input is-danger"
+                    }`}
                   />
                   <span className="icon is-small is-left">
                     <ion-icon name="mail-outline"></ion-icon>
@@ -284,4 +286,8 @@ function checkDob(val) {
   } else {
     return false;
   }
+}
+function checkEmail(val) {
+  var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(val);
 }
