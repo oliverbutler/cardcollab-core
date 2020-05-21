@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import Joi from "@hapi/joi";
 
 /**
  * Capitalize a String
@@ -64,3 +65,28 @@ export function checkDateOfBirth(dateOfBirth: string) {
     return false;
   }
 }
+
+/**
+ * Takes a field, value and schema and validates it.
+ * - Returns a string if theres an error
+ * - null if valid
+ *
+ * @param name - field name e.g. givenName
+ * @param value - field value e.g. "jeff"
+ * @param schema - schema to validate against
+ */
+export const validateProperty = (
+  name: string,
+  value: string,
+  schema
+): string => {
+  const obj = {
+    [name]: value,
+  };
+  try {
+    Joi.assert(obj, schema);
+    return null;
+  } catch (err) {
+    return err.message;
+  }
+};
