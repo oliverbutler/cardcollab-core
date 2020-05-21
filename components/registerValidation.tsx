@@ -1,20 +1,8 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
 import Auth from "@aws-amplify/auth";
 import { SignUpParams } from "@aws-amplify/auth/lib-esm/types";
-import PasswordCheck from "components/passwordCheck";
-import { getToast } from "util/functions";
-import { motion } from "framer-motion";
-import classNames from "classnames";
-import { logEvent, logPageView } from "util/analytics";
-import { renderToStaticMarkup } from "react-dom/server";
 
 const Joi = require("@hapi/joi");
 console.log(Joi.version); // check joi works
-
-const now = Date.now();
-const cutoffDate = new Date(now - 1000 * 60 * 60 * 24 * 365 * 100); // go back by 21 years
 
 const schema = Joi.object().keys({
   given_name: Joi.string()
@@ -108,9 +96,6 @@ async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
           return err;
         }
       } catch (err) {
-        console.log(err);
-        console.log(err.toString());
-        console.log("gayyyy");
         return err;
       }
     } else {
