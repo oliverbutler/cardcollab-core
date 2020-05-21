@@ -20,37 +20,37 @@ const schema = Joi.object().keys({
   given_name: Joi.string()
     .min(3)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "First Name Incorrect. Usernames have to be between 3 to 20 in length."
     )
     .max(20)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "First Name Incorrect. Usernames have to be between 3 to 20 in length."
     )
     .required(),
 
   familyName: Joi.string()
     .min(3)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "Last Name Incorrect. Usernames have to be between 3 to 20 in length."
     )
     .max(20)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "Last Name Incorrect. Usernames have to be between 3 to 20 in length."
     )
     .required(),
 
   username: Joi.string()
     .alphanum()
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "Username Incorrect. Usernames have to be made up of letters and numbers."
     )
     .min(3)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "Username Incorrect. Usernames have to be between 3 to 30 in length."
     )
     .max(30)
     .message(
-      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+      "Username Incorrect. Usernames have to be between 3 to 30 in length."
     )
     .required(),
 
