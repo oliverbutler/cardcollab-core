@@ -147,6 +147,7 @@ export default () => {
                       checkDob(birthDate) ? "input is-danger" : "input"
                     }`}
                   />
+                  <DOBErrorMessage error={!checkDob(birthDate)} />
                   <span className="icon is-small is-left">
                     <ion-icon name="calendar-outline"></ion-icon>
                   </span>
@@ -308,4 +309,18 @@ function UsernameSucess(props) {
 
 function UsernameFail(props) {
   return <p class="help is-danger">This Username is invalid</p>;
+}
+function DOBErrorMessage(props) {
+  const error = props.error;
+  if (error) {
+    return <DOBSucess />;
+  }
+  return <DOBFail />;
+}
+function DOBSucess(props) {
+  return <p class="help is-success">This DOB is valid</p>;
+}
+
+function DOBFail(props) {
+  return <p class="help is-danger">This DOB is invalid</p>;
 }
