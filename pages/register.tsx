@@ -50,6 +50,9 @@ export default () => {
   // todo: username + email checking
 
   const onSubmit = async (event) => {
+    // age verification
+
+    //
     event.preventDefault();
     setLoading(true);
 
@@ -105,7 +108,6 @@ export default () => {
         <div className="column is-narrow">
           <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
             <h1 className="title">Sign Up</h1>
-
             <form>
               <div className="field">
                 <div className="field-body">

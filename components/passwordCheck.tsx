@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import classnames from "classnames";
+import passwordStrength from "components/passwordStrength";
 
 const passportCheck = ({ password }) => {
   const [errorClass, setErrorClass] = useState("");
