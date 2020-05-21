@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { logPageView } from "util/analytics";
-import { addCard } from "util/db/card";
+import Link from "next/link";
 import { Deck } from "components/deckCard";
+
 const decks = () => {
   const decks = [
     {
@@ -39,9 +40,11 @@ const decks = () => {
     <div className="container">
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h1 className="title">My Decks</h1>
-        <a style={{ fontSize: "3em" }}>
-          <ion-icon name="add-circle-outline"></ion-icon>
-        </a>
+        <Link href="/create_deck">
+          <a style={{ fontSize: "3em" }}>
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </a>
+        </Link>
       </div>
       <div className="content">
         <h3>Latest Decks</h3>
