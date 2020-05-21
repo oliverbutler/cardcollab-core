@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AccountContext } from "context/account";
-import { capitalize } from "../util/functions";
 import { useRouter } from "next/router";
 import MenuToggle from "components/menuToggle";
 import { motion } from "framer-motion";
-// import useWindowDimensions from "util/useWindowDimension";
 
 function Navigation() {
   const { state, dispatch } = useContext(AccountContext);
-  // const { height, width } = useWindowDimensions();
   const [isActive, setIsActive] = useState(false);
 
   const router = useRouter();
@@ -51,12 +48,9 @@ function Navigation() {
 
       <motion.div
         className="navigation-motion"
-        // initial={{ opacity: 0 }}
         animate={{
           height: isActive ? "auto" : 0,
-          // opacity: isActive ? 1 : width < 760 ? 0 : 1,
         }}
-        // transition={{ delay: width < 769 ? 0 : 0.1 }}
       >
         <div className="left">
           <Link href="/about">

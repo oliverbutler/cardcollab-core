@@ -1,38 +1,53 @@
-import { Dispatch, SetStateAction, HTMLAttributes } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  HTMLAttributes,
+  ChangeEvent,
+  useState,
+} from "react";
+import { motion } from "framer-motion";
+import PasswordCheck from "components/passwordCheck";
 
 export enum InputType {
   EMAIL = "email",
   PASSWORD = "password",
   USERNAME = "username",
   TEXT = "text",
+  DATE = "date",
 }
 
 type InputProps = {
-  type: InputType;
+  type?: InputType;
   title: string;
   value: string;
   onChange: Dispatch<SetStateAction<string>>;
-  validate?: boolean;
+  passwordStrength?: boolean;
   iconLeft?: string;
+  error?: string;
 };
 
 const input = ({
-  type,
+  type = InputType.TEXT,
   title,
   value,
   onChange,
   iconLeft = null,
-  validate = false,
+  passwordStrength = false,
+  error = "",
 }: InputProps) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange(event.target.value);
+  };
+
   return (
     <div className="field">
       <label className="label">{title}</label>
-      <div className="control has-icons-left ">
+      <div className={"control " + (iconLeft ? "has-icons-left" : "")}>
         <input
-          className="input"
+          className={"input " + (error ? "is-danger" : "")}
           type={type}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={handleChange}
         />
         {iconLeft ? (
           <span className="icon is-small is-left">
@@ -41,7 +56,20 @@ const input = ({
         ) : (
           <></>
         )}
+
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: value ? 1 : 0, height: value ? "auto" : 0 }}
+          style={{ paddingTop: 5 }}
+        >
+          {passwordStrength && value ? (
+            <PasswordCheck password={value} />
+          ) : (
+            <></>
+          )}
+        </motion.div>
       </div>
+      {error ? <p className="help is-danger">{error}</p> : <></>}
     </div>
   );
 };

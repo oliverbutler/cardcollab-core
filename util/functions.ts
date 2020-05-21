@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
-import { isEmpty } from "@aws-amplify/core";
+import Joi from "@hapi/joi";
+
 /**
  * Capitalize a String
  *
@@ -45,20 +46,47 @@ export function getToast() {
 }
 
 /**
- * Simple version of a validation function, checks all parts are present
+ * Returns a boolean based on whether or not a date of birth is valid
  *
- * @param body - req.body
- * @param types - array of keys that should be present on req.body
+ * @param dateOfBirth
  */
-export const validateBody = (body: {}, types: string[]) => {
-  var errors = [];
+export function checkDateOfBirth(dateOfBirth: string) {
+  var err = false;
+  var year = new Date(dateOfBirth);
+  var year2 = year.getFullYear();
+  var date = new Date().getFullYear();
+  var dif = year2 - date;
+  if (dif < -100 || dif > 0) {
+    err = true;
+  }
+  if (err) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
-  types.forEach((type) => {
-    var error = {};
-    if (!body[type]) error["error"] = type + " is missing";
-
-    if (!isEmpty(error)) errors.push(error);
-  });
-
-  if (!isEmpty(errors)) return errors;
+/**
+ * Takes a field, value and schema and validates it.
+ * - Returns a string if theres an error
+ * - null if valid
+ *
+ * @param name - field name e.g. givenName
+ * @param value - field value e.g. "jeff"
+ * @param schema - schema to validate against
+ */
+export const validateProperty = (
+  name: string,
+  value: string,
+  schema
+): string => {
+  const obj = {
+    [name]: value,
+  };
+  try {
+    Joi.assert(obj, schema);
+    return null;
+  } catch (err) {
+    return err.message;
+  }
 };
