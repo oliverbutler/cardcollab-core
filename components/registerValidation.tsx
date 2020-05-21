@@ -8,6 +8,7 @@ import { getToast } from "util/functions";
 import { motion } from "framer-motion";
 import classNames from "classnames";
 import { logEvent, logPageView } from "util/analytics";
+import { renderToStaticMarkup } from "react-dom/server";
 
 const Joi = require("@hapi/joi");
 console.log(Joi.version); // check joi works
@@ -19,20 +20,17 @@ const schema = Joi.object().keys({
   given_name: Joi.string()
     .min(3)
     .max(20)
-    .capitalise()
     .required(),
 
   familyName: Joi.string()
     .min(3)
     .max(20)
-    .capitalise()
     .required(),
 
   username: Joi.string()
     .alphanum()
     .min(3)
     .max(30)
-    .capitalise()
     .required(),
 
   password: Joi.string()
@@ -43,50 +41,45 @@ const schema = Joi.object().keys({
     )
     .required(),
 
-  Dob: Joi.string()
+  birthdate: Joi.string()
     .isoDate()
-    .max(cutoffDate)
-    .min(now)
     .required(),
 
   email: Joi.string()
-    .email({ minDomainSegments: 2 })
-    .lowercase()
+    .email({ tlds: { allow: false } })
     .required(),
 });
 
-function signUpValidation(param) {
-  param.given_name = capitalise(param.given_name);
-  param.familyName = capitalise(param.familyName);
-  param.username = capitalise(param.username);
-  param.email = param.email.toLowerCase();
-  Joi.validate(
-    {
-      email: param.email.toLowerCase(),
-      password: param.password,
-      given_name: capitalise(param.given_name),
-      username: capitalise(param.username),
-      familyName: capitalise(param.familyName),
-      birthdate: param.birthdate,
-    },
-    schema,
-    (err, value) => {
-      if (err) {
-        // send a 422 error response if validation fails
-        return err;
-      } else {
-        try {
-          const user = Auth.signUp(param);
-          console.log(user);
-          return true;
-        } catch (err) {
-          return err;
-        }
-      }
+async function signUpValidation(email, pw, gn, un, fn, bd) {
+  try {
+    const value = await schema.validateAsync({
+      email: email,
+      password: pw,
+      given_name: gn,
+      username: un,
+      familyName: fn,
+      birthdate: bd,
+    });
+    try {
+      const param: SignUpParams = {
+        username: email,
+        password: pw,
+        attributes: {
+          given_name: gn,
+          family_name: fn,
+          birthdate: bd,
+          preferred_username: un,
+        },
+      };
+      const user = Auth.signUp(param);
+      console.log(user);
+      return true;
+    } catch (err) {
+      return err;
     }
-  );
+  } catch (err) {
+    return err;
+  }
 }
-function capitalise(str) {
-  return str[0].toUpperCase() + str.slice(1).lowercase;
-}
+
 export default signUpValidation;
