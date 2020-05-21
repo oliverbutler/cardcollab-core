@@ -28,34 +28,8 @@ export default () => {
 
   const onSubmit = async (event) => {
     var err = false;
-    if (email & userName & familyName & birthDate & password & password2) {
-      getToast().fire({
-        icon: "error",
-        title: "Fill all fields before submitting",
-      });
-      err = true;
-    }
 
     // age verification
-    var year = new Date(birthDate);
-    year = year.getFullYear();
-    var date = new Date().getFullYear();
-    var dif = year - date;
-    if (dif < -100) {
-      getToast().fire({
-        icon: "error",
-        title: "Geez How old are you?!?",
-      });
-      err = true;
-    }
-
-    if (dif > 0) {
-      getToast().fire({
-        icon: "error",
-        title: "T-" + dif + " Years till your birth",
-      });
-      err = true;
-    }
 
     if (!err) {
       //
@@ -169,10 +143,12 @@ export default () => {
                 <label className="label">Date of Birth</label>
                 <div className="control has-icons-left">
                   <input
-                    className="input"
                     type="date"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
+                    className={`${
+                      checkDob(birthDate) ? "input is-danger" : "input"
+                    }`}
                   />
                   <span className="icon is-small is-left">
                     <ion-icon name="calendar-outline"></ion-icon>
@@ -279,6 +255,33 @@ function checkUsername(val) {
     return true;
   } else {
     console.log(false);
+    return false;
+  }
+}
+function checkDob(val) {
+  var err = false;
+  var year = new Date(val);
+  year = year.getFullYear();
+  var date = new Date().getFullYear();
+  var dif = year - date;
+  if (dif < -100) {
+    getToast().fire({
+      icon: "error",
+      title: "Geez How old are you?!?",
+    });
+    err = true;
+  }
+
+  if (dif > 0) {
+    getToast().fire({
+      icon: "error",
+      title: "T-" + dif + " Years till your birth",
+    });
+    err = true;
+  }
+  if (err) {
+    return true;
+  } else {
     return false;
   }
 }
