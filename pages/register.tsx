@@ -29,9 +29,8 @@ export default () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    console.log(email, password, givenName);
     var response = await RegisterValidation(
-      setEmail,
+      email,
       password,
       password2,
       familyName,
@@ -39,7 +38,6 @@ export default () => {
       givenName,
       birthDate
     );
-    console.log("### " + response);
     if (response == true) {
       setLoading(false);
       router.push("/login");
@@ -50,7 +48,6 @@ export default () => {
         text: "Please confirm your email",
       });
     } else {
-      console.log(response);
       setLoading(false);
       getToast().fire({
         icon: "error",
