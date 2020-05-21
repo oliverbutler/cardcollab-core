@@ -2,6 +2,7 @@
 import Auth from "@aws-amplify/auth";
 import { SignUpParams } from "@aws-amplify/auth/lib-esm/types";
 import PasswordCheck from "components/passwordCheck";
+import PasswordStrength from "components/passwordStrength";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -183,6 +184,7 @@ export default () => {
                 }}
                 style={{ minHeight: 0 }}
               >
+                <PWErrorMessage val={PasswordStrength(password)} />
                 <div className="field">
                   <label className="label">Verify Password</label>
                   <div className="control has-icons-left">
@@ -323,4 +325,16 @@ function DOBSucess(props) {
 
 function DOBFail(props) {
   return <p class="help is-danger">This DOB is invalid</p>;
+}
+function PWErrorMessage(props) {
+  const val = props.val;
+  if (val < 50) {
+    return (
+      <p class="help is-danger">
+        Your password is weak try adding capitals, numbersc and symbols to it or
+        making it longer
+      </p>
+    );
+  }
+  return false;
 }
