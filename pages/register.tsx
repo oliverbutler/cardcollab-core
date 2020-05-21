@@ -129,6 +129,7 @@ export default () => {
                       checkUsername(userName) ? "input is-danger" : "input"
                     }`}
                   />
+                  <UsernameErrorMessage error={!checkUsername(userName)} />
 
                   <span className="icon is-small is-left">
                     <ion-icon name="at-outline"></ion-icon>
@@ -292,4 +293,19 @@ function EmailSucess(props) {
 
 function EmailFail(props) {
   return <p class="help is-danger">This email is invalid</p>;
+}
+
+function UsernameErrorMessage(props) {
+  const error = props.error;
+  if (error) {
+    return <UsernameSucess />;
+  }
+  return <UsernameFail />;
+}
+function UsernameSucess(props) {
+  return <p class="help is-success">This Username is valid</p>;
+}
+
+function UsernameFail(props) {
+  return <p class="help is-danger">This Username is invalid</p>;
 }
