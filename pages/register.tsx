@@ -30,7 +30,7 @@ export default () => {
     event.preventDefault();
     setLoading(true);
     console.log(email, password, givenName);
-    var response = RegisterValidation(
+    var response = await RegisterValidation(
       setEmail,
       password,
       password2,
@@ -39,6 +39,7 @@ export default () => {
       givenName,
       birthDate
     );
+    console.log("### " + response);
     if (response == true) {
       setLoading(false);
       router.push("/login");
@@ -49,6 +50,7 @@ export default () => {
         text: "Please confirm your email",
       });
     } else {
+      response = response;
       console.log(response);
       setLoading(false);
       if (response == "DOB wrong") {
@@ -57,6 +59,11 @@ export default () => {
         getToast().fire({
           icon: "error",
           title: "Date of Birth is incorrect",
+        });
+      } else {
+        getToast().fire({
+          icon: "error",
+          title: response,
         });
       }
     }
