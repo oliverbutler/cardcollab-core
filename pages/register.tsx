@@ -31,11 +31,12 @@ export default () => {
     setLoading(true);
     console.log(email, password, givenName);
     var response = RegisterValidation(
-      email.toString(),
-      password.toString(),
-      familyName.toString(),
-      userName.toString(),
-      givenName.toString(),
+      setEmail,
+      password,
+      password2,
+      familyName,
+      userName,
+      givenName,
       birthDate
     );
     if (response == true) {

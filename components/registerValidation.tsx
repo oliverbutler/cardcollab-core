@@ -50,36 +50,45 @@ const schema = Joi.object().keys({
     .required(),
 });
 
-async function signUpValidation(email, pw, gn, un, fn, bd) {
-  try {
-    const value = await schema.validateAsync({
-      email: email,
-      password: pw,
-      given_name: gn,
-      username: un,
-      familyName: fn,
-      birthdate: bd,
-    });
+async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
+  if (pw1 == pw && bd < now && bd > cutoffDate) {
     try {
-      const param: SignUpParams = {
-        username: email,
+      const value = await schema.validateAsync({
+        email: email,
         password: pw,
-        attributes: {
-          given_name: gn,
-          family_name: fn,
-          birthdate: bd,
-          preferred_username: un,
-        },
-      };
-      const user = Auth.signUp(param);
-      console.log(user);
-      return true;
+        given_name: gn,
+        username: un,
+        familyName: fn,
+        birthdate: bd,
+      });
+
+      try {
+        const param: SignUpParams = {
+          username: email,
+          password: pw,
+          attributes: {
+            given_name: capitalize(gn, true),
+            family_name: capitalize(fn, true),
+            birthdate: bd,
+            preferred_username: capitalize(un, true),
+          },
+        };
+        const user = Auth.signUp(param);
+        console.log(user);
+        return true;
+      } catch (err) {
+        return err;
+      }
     } catch (err) {
       return err;
     }
-  } catch (err) {
-    return err;
+  } else {
+    return "password not equal";
   }
 }
 
+const capitalize = (str, lower = false) =>
+  (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) =>
+    match.toUpperCase()
+  );
 export default signUpValidation;
