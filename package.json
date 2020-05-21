@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "test": "jest"
   },
   "dependencies": {
     "@aws-amplify/auth": "^3.2.6",
@@ -37,6 +38,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
     "@types/aws-sdk": "^2.7.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/classnames": "^2.2.10",
@@ -49,7 +52,13 @@
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.35",
     "@types/sass": "^1.16.0",
+    "babel-jest": "^26.0.1",
+    "jest": "^26.0.1",
     "typescript": "^3.8.3"
   },
-  "snyk": true
+  "snyk": true,
+  "main": "index.js",
+  "repository": "https://github.com/CardCollab/cardcollab-core.git",
+  "author": "Jwcode-uk <Jonathanwhite0000@gmail.com>",
+  "license": "MIT"
 }

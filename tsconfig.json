@@ -22,6 +22,8 @@
     "**/*.tsx",
     "pages/register.jsx",
     "pages/register.jsx",
-    "pages/api/test.js"
+    "pages/api/test.js",
+    "sum.js",
+    "sum.test.js"
   ]
 }
