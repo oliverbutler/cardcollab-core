@@ -77,41 +77,61 @@ const schema = Joi.object().keys({
 });
 
 async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
-  if (pw1 == pw) {
-    try {
-      const value = await schema.validateAsync({
-        email: email,
-        password: pw,
-        given_name: gn,
-        username: un,
-        familyName: fn,
-        birthdate: bd,
-      });
+  if (checkDob(bd)) {
+    return "Date of Birth is invalid";
+  } else {
+    if (pw1 == pw) {
       try {
-        const param: SignUpParams = {
-          username: email,
+        const value = await schema.validateAsync({
+          email: email,
           password: pw,
-          attributes: {
-            given_name: capitalize(gn, true),
-            family_name: capitalize(fn, true),
-            birthdate: bd,
-            preferred_username: capitalize(un, true),
-          },
-        };
-        const user = Auth.signUp(param);
-        console.log(user);
-        return true;
+          given_name: gn,
+          username: un,
+          familyName: fn,
+          birthdate: bd,
+        });
+        try {
+          const param: SignUpParams = {
+            username: email,
+            password: pw,
+            attributes: {
+              given_name: capitalize(gn, true),
+              family_name: capitalize(fn, true),
+              birthdate: bd,
+              preferred_username: capitalize(un, true),
+            },
+          };
+          const user = Auth.signUp(param);
+          console.log(user);
+          return true;
+        } catch (err) {
+          return err;
+        }
       } catch (err) {
+        console.log(err);
+        console.log(err.toString());
+        console.log("gayyyy");
         return err;
       }
-    } catch (err) {
-      console.log(err);
-      console.log(err.toString());
-      console.log("gayyyy");
-      return err;
+    } else {
+      return "Your passwords don't match";
     }
+  }
+}
+
+function checkDob(val) {
+  var err = false;
+  var year = new Date(val);
+  var year2 = year.getFullYear();
+  var date = new Date().getFullYear();
+  var dif = year2 - date;
+  if (dif < -100 || dif > 0) {
+    err = true;
+  }
+  if (err) {
+    return true;
   } else {
-    return "passwords don't match";
+    return false;
   }
 }
 
