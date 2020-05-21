@@ -72,7 +72,7 @@ export default () => {
                     <div className="control has-icons-left ">
                       <input
                         className="input"
-                        type="email"
+                        type="text"
                         value={givenName}
                         onChange={(e) => setGivenName(e.target.value)}
                       />
@@ -86,7 +86,7 @@ export default () => {
                     <div className="control  ">
                       <input
                         className="input"
-                        type="email"
+                        type="text"
                         value={familyName}
                         onChange={(e) => setFamilyName(e.target.value)}
                       />

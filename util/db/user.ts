@@ -47,7 +47,7 @@ export interface IUser {
  * @param role - optional role, defaults to ['student]
  *
  */
-export const createUser = (
+export const createUser = async (
   givenName: string,
   familyName: string,
   username: string,
@@ -57,6 +57,24 @@ export const createUser = (
 ) => {
   const userID = nanoid.nanoid();
 
+  var eCheck = null;
+  var uCheck = null;
+
+  // Check if the email is taken
+  try {
+    eCheck = await getUserByEmail(email, { return: false });
+  } catch (err) {}
+
+  if (eCheck != null) throw new Error("Email Taken");
+
+  // Check if the username is taken
+  try {
+    uCheck = await getUserByUsername(username, { return: false });
+  } catch (err) {}
+
+  if (uCheck != null) throw new Error("Username Taken");
+
+  // Write all of the users metadata to the DB
   var params: AWS.DynamoDB.DocumentClient.TransactWriteItemsInput = {
     TransactItems: [
       {
@@ -64,7 +82,7 @@ export const createUser = (
           TableName: "CardCollab",
           Item: {
             partitionKey: `user#${userID}`,
-            sortKey: `user#${userID}`,
+            sortKey: `user#info`,
             givenName: givenName,
             familyName: familyName,
             dateOfBirth: dateOfBirth,
@@ -77,7 +95,7 @@ export const createUser = (
           TableName: "CardCollab",
           Item: {
             partitionKey: `user#${userID}`,
-            sortKey: `user#username`,
+            sortKey: `user#info#username`,
             var1: username,
           },
         },
@@ -87,7 +105,7 @@ export const createUser = (
           TableName: "CardCollab",
           Item: {
             partitionKey: `user#${userID}`,
-            sortKey: `user#email`,
+            sortKey: `user#info#email`,
             var1: email,
           },
         },
@@ -95,7 +113,16 @@ export const createUser = (
     ],
   };
 
-  return docClient.transactWrite(params).promise();
+  return await docClient
+    .transactWrite(params)
+    .promise()
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      console.log(err);
+      return new Error("error");
+    });
 };
 
 /**
@@ -169,7 +196,7 @@ export const getUserByEmail = async (
     IndexName: "GSI1",
     KeyConditionExpression: "sortKey = :sk and var1 = :email",
     ExpressionAttributeValues: {
-      ":sk": "user#email",
+      ":sk": "user#info#email",
       ":email": email,
     },
   };
@@ -178,15 +205,14 @@ export const getUserByEmail = async (
     .promise()
     .then(async (data) => {
       const userID = data.Items[0].partitionKey.substring(5);
-
+      console.log("userID" + userID);
       if (config.return)
         return await getUserByID(userID)
           .then((data) => {
             return data;
           })
           .catch((err) => {
-            console.log(err);
-            return new Error("cant find user by id");
+            throw new Error("cant find user by id");
           });
       else return userID;
     })
@@ -209,7 +235,7 @@ export const getUserByUsername = async (
     IndexName: "GSI1",
     KeyConditionExpression: "sortKey = :sk and var1 = :username",
     ExpressionAttributeValues: {
-      ":sk": "user#username",
+      ":sk": "user#info#username",
       ":username": username,
     },
   };
@@ -218,6 +244,7 @@ export const getUserByUsername = async (
     .promise()
     .then(async (data) => {
       const userID = data.Items[0].partitionKey.substring(5);
+      console.log(userID);
 
       if (config.return)
         return await getUserByID(userID)
