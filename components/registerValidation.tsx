@@ -19,25 +19,40 @@ const cutoffDate = new Date(now - 1000 * 60 * 60 * 24 * 365 * 100); // go back b
 const schema = Joi.object().keys({
   given_name: Joi.string()
     .min(3)
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .max(20)
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .required(),
 
   familyName: Joi.string()
     .min(3)
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .max(20)
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .required(),
 
   username: Joi.string()
     .alphanum()
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .min(3)
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
     .max(30)
-    .required()
-    .error(() => {
-      return {
-        message:
-          "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers.",
-      };
-    }),
+    .message(
+      "Username Incorrect. Usernames have to be between 3 to 30 in length and be made up of letters and numbers."
+    )
+    .required(),
 
   password: Joi.string()
     .pattern(
@@ -45,64 +60,55 @@ const schema = Joi.object().keys({
         "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])| (?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])"
       )
     )
-    .required()
-    .error(() => {
-      return {
-        message:
-          "Please improve your password strength. This can be done by adding symbols, capitals, number or even just increasing it's length",
-      };
-    }),
-
+    .message(
+      "Please improve your password strength. This can be done by adding symbols, capitals, number or even just increasing it's length"
+    )
+    .required(),
   birthdate: Joi.string()
     .isoDate()
     .required(),
 
   email: Joi.string()
     .email({ tlds: { allow: false } })
-    .required()
-    .error(() => {
-      return {
-        message:
-          "Email Incorrect. Your email is incorrect please double check this.",
-      };
-    }),
+    .message(
+      "Email Incorrect. Your email is incorrect please double check this."
+    )
+    .required(),
 });
 
 async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
   if (pw1 == pw) {
-    if (bd < now && bd > cutoffDate) {
+    try {
+      const value = await schema.validateAsync({
+        email: email,
+        password: pw,
+        given_name: gn,
+        username: un,
+        familyName: fn,
+        birthdate: bd,
+      });
       try {
-        const value = await schema.validateAsync({
-          email: email,
+        const param: SignUpParams = {
+          username: email,
           password: pw,
-          given_name: gn,
-          username: un,
-          familyName: fn,
-          birthdate: bd,
-        });
-
-        try {
-          const param: SignUpParams = {
-            username: email,
-            password: pw,
-            attributes: {
-              given_name: capitalize(gn, true),
-              family_name: capitalize(fn, true),
-              birthdate: bd,
-              preferred_username: capitalize(un, true),
-            },
-          };
-          const user = Auth.signUp(param);
-          console.log(user);
-          return true;
-        } catch (err) {
-          return err;
-        }
+          attributes: {
+            given_name: capitalize(gn, true),
+            family_name: capitalize(fn, true),
+            birthdate: bd,
+            preferred_username: capitalize(un, true),
+          },
+        };
+        const user = Auth.signUp(param);
+        console.log(user);
+        return true;
       } catch (err) {
         return err;
       }
-    } else {
-      return "DOB wrong";
+    } catch (err) {
+      console.log(err);
+      console.log(err.toString());
+      console.log("gayyyy");
+      return err;
     }
   } else {
     return "passwords don't match";
