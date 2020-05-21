@@ -9,6 +9,7 @@ import { getToast } from "util/functions";
 import { motion } from "framer-motion";
 import classNames from "classnames";
 import { logEvent, logPageView } from "util/analytics";
+import RegisterValidation from "components/registerValidation";
 
 export default () => {
   const router = useRouter();
@@ -38,10 +39,8 @@ export default () => {
         preferred_username: userName,
       },
     };
-
-    try {
-      const user = await Auth.signUp(param);
-      console.log(user);
+    var response = RegisterValidation(param);
+    if (response == true) {
       setLoading(false);
       router.push("/login");
       logEvent("register", email + " registered");
@@ -50,8 +49,8 @@ export default () => {
         title: "Successfully Registered!",
         text: "Please confirm your email",
       });
-    } catch (err) {
-      console.log(err);
+    } else {
+      console.log(response);
       setLoading(false);
       getToast().fire({ icon: "error", title: "Error with your form" });
     }
