@@ -79,7 +79,7 @@ async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
           birthdate: bd,
         });
         try {
-          const param: SignUpParams = {
+          const user = Auth.signUp({
             username: email,
             password: pw,
             attributes: {
@@ -88,8 +88,7 @@ async function signUpValidation(email, pw, pw1, gn, un, fn, bd) {
               birthdate: bd,
               preferred_username: capitalize(un, true),
             },
-          };
-          const user = Auth.signUp(param);
+          });
           console.log(user);
           return true;
         } catch (err) {
