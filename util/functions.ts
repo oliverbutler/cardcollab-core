@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { isEmpty } from "@aws-amplify/core";
+
 /**
  * Capitalize a String
  *
@@ -45,20 +45,22 @@ export function getToast() {
 }
 
 /**
- * Simple version of a validation function, checks all parts are present
+ * Returns a boolean based on whether or not a date of birth is valid
  *
- * @param body - req.body
- * @param types - array of keys that should be present on req.body
+ * @param dateOfBirth
  */
-export const validateBody = (body: {}, types: string[]) => {
-  var errors = [];
-
-  types.forEach((type) => {
-    var error = {};
-    if (!body[type]) error["error"] = type + " is missing";
-
-    if (!isEmpty(error)) errors.push(error);
-  });
-
-  if (!isEmpty(errors)) return errors;
-};
+export function checkDateOfBirth(dateOfBirth: string) {
+  var err = false;
+  var year = new Date(dateOfBirth);
+  var year2 = year.getFullYear();
+  var date = new Date().getFullYear();
+  var dif = year2 - date;
+  if (dif < -100 || dif > 0) {
+    err = true;
+  }
+  if (err) {
+    return true;
+  } else {
+    return false;
+  }
+}
