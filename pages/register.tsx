@@ -55,11 +55,6 @@ export default () => {
       setLoading(false);
       if (response == "DOB wrong") {
         getToast().fire({ icon: "error", title: "Passwords do not match" });
-      } else if (response == "passwords don't match") {
-        getToast().fire({
-          icon: "error",
-          title: "Date of Birth is incorrect",
-        });
       } else {
         getToast().fire({
           icon: "error",
