@@ -9,7 +9,7 @@ import { getToast } from "util/functions";
 import { motion } from "framer-motion";
 import classNames from "classnames";
 import { logEvent, logPageView } from "util/analytics";
-import RegisterValidation from "components/registerValidation";
+import RegisterValidation from "util/registerValidation";
 
 export default () => {
   const router = useRouter();

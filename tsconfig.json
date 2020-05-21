@@ -1,4 +1,4 @@
-{
+({
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -24,4 +24,5 @@
     "pages/register.jsx",
     "pages/api/test.js"
   ]
-}
+},
+"components/registerValidation.js")
