@@ -50,17 +50,12 @@ export default () => {
         text: "Please confirm your email",
       });
     } else {
-      response = response;
       console.log(response);
       setLoading(false);
-      if (response == "DOB wrong") {
-        getToast().fire({ icon: "error", title: "Passwords do not match" });
-      } else {
-        getToast().fire({
-          icon: "error",
-          title: response,
-        });
-      }
+      getToast().fire({
+        icon: "error",
+        title: response,
+      });
     }
   };
 
