@@ -27,46 +27,40 @@ export default () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (event) => {
-    var err = false;
-
     // age verification
 
-    if (!err) {
-      //
-      event.preventDefault();
-      setLoading(true);
-      const param: SignUpParams = {
-        username: email,
-        password,
-        attributes: {
-          given_name: givenName,
-          family_name: familyName,
-          birthdate: birthDate,
-          preferred_username: userName,
-        },
-      };
+    //
+    event.preventDefault();
+    setLoading(true);
+    const param: SignUpParams = {
+      username: email,
+      password,
+      attributes: {
+        given_name: givenName,
+        family_name: familyName,
+        birthdate: birthDate,
+        preferred_username: userName,
+      },
+    };
 
-      try {
-        const user = await Auth.signUp(param);
-        console.log(user);
-        setLoading(false);
-        router.push("/login");
-        logEvent("register", email + " registered");
-        getToast().fire({
-          icon: "success",
-          title: "Successfully Registered!",
-          text: "Please confirm your email",
-        });
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        getToast().fire({
-          icon: "error",
-          title: "Error with your form",
-        });
-      }
-    } else {
+    try {
+      const user = await Auth.signUp(param);
+      console.log(user);
       setLoading(false);
+      router.push("/login");
+      logEvent("register", email + " registered");
+      getToast().fire({
+        icon: "success",
+        title: "Successfully Registered!",
+        text: "Please confirm your email",
+      });
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      getToast().fire({
+        icon: "error",
+        title: "Error with your form",
+      });
     }
   };
 
@@ -76,7 +70,6 @@ export default () => {
         <div className="column is-narrow">
           <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
             <h1 className="title">Sign Up</h1>
-
             <form>
               <div className="field">
                 <div className="field-body">
@@ -119,6 +112,7 @@ export default () => {
                       checkEmail(email) ? "input" : "input is-danger"
                     }`}
                   />
+                  <EmailErrorMessage error={checkEmail(email)} />
                   <span className="icon is-small is-left">
                     <ion-icon name="mail-outline"></ion-icon>
                   </span>
@@ -243,6 +237,7 @@ export default () => {
     </div>
   );
 };
+
 function checkUsername(val) {
   // username check
   val = val.toString();
@@ -266,19 +261,7 @@ function checkDob(val) {
   year = year.getFullYear();
   var date = new Date().getFullYear();
   var dif = year - date;
-  if (dif < -100) {
-    getToast().fire({
-      icon: "error",
-      title: "Geez How old are you?!?",
-    });
-    err = true;
-  }
-
-  if (dif > 0) {
-    getToast().fire({
-      icon: "error",
-      title: "T-" + dif + " Years till your birth",
-    });
+  if (dif < -100 || dif > 0) {
     err = true;
   }
   if (err) {
@@ -289,5 +272,24 @@ function checkDob(val) {
 }
 function checkEmail(val) {
   var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return regex.test(val);
+  if (val) {
+    return regex.test(val);
+  } else {
+    return true;
+  }
+}
+
+function EmailErrorMessage(props) {
+  const error = props.error;
+  if (error) {
+    return <EmailSucess />;
+  }
+  return <EmailFail />;
+}
+function EmailSucess(props) {
+  return <p class="help is-success">This email is valid</p>;
+}
+
+function EmailFail(props) {
+  return <p class="help is-danger">This email is invalid</p>;
 }
