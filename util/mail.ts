@@ -8,6 +8,13 @@ var mailgun = require("mailgun-js")({
   host: "api.eu.mailgun.net",
 });
 
+/**
+ * Sends email confirmation to a given email
+ *
+ * @param email
+ * @param givenName
+ * @param callback
+ */
 export const sendEmailConfirmation = (
   email: string,
   givenName: string,

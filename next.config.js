@@ -11,6 +11,7 @@ module.exports = {
   },
   serverRuntimeConfig: {
     AWS_REGION: "eu-west-2",
+    SECRET: process.env.SECRET,
     MONGO_DB: process.env.MONGO_DB,
     MAIL_GUN_API_KEY: process.env.MAIL_GUN_API_KEY,
     DEPLOY_TIME: new Date(Date.now()).toLocaleString(),

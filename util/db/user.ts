@@ -1,5 +1,7 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
+import { isEmpty, capitalize } from "util/functions";
+import { schema } from "schema/user";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -30,6 +32,9 @@ export interface IUser {
   role: string[];
   email: string;
   username: string;
+  birthDate: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -48,31 +53,44 @@ export interface IUser {
  *
  */
 export const createUser = async (
+  userID: string = nanoid.nanoid(),
   givenName: string,
   familyName: string,
   username: string,
   email: string,
-  dateOfBirth: string,
+  birthDate: string,
   role: string[] = ["student"]
 ) => {
-  const userID = nanoid.nanoid();
+  var check = null;
 
-  var eCheck = null;
-  var uCheck = null;
+  var validate = schema.validate({
+    givenName,
+    familyName,
+    username,
+    email,
+    birthDate,
+    role,
+  });
+
+  validate.value.givenName = capitalize(validate.value.givenName);
+  validate.value.familyName = capitalize(validate.value.familyName);
+
+  if (validate.error) {
+    throw new Error(validate.error);
+  }
 
   // Check if the email is taken
   try {
-    eCheck = await getUserByEmail(email, { return: false });
+    check = await getUserByEmail(email, { return: false });
   } catch (err) {}
-
-  if (eCheck != null) throw new Error("Email Taken");
+  if (check) throw new Error("Email Taken");
 
   // Check if the username is taken
   try {
-    uCheck = await getUserByUsername(username, { return: false });
+    check = await getUserByUsername(username, { return: false });
   } catch (err) {}
 
-  if (uCheck != null) throw new Error("Username Taken");
+  if (check) throw new Error("Username Taken");
 
   // Write all of the users metadata to the DB
   var params: AWS.DynamoDB.DocumentClient.TransactWriteItemsInput = {
@@ -83,10 +101,15 @@ export const createUser = async (
           Item: {
             partitionKey: `user#${userID}`,
             sortKey: `user#info`,
-            givenName: givenName,
-            familyName: familyName,
-            dateOfBirth: dateOfBirth,
-            role: role,
+            givenName: validate.value.givenName,
+            familyName: validate.value.familyName,
+            birthDate: validate.value.birthDate,
+            var1: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            role: validate.value.role,
+            username: validate.value.username,
+            vanityUsername: validate.value.username.toLowerCase(),
+            email: validate.value.email,
           },
         },
       },
@@ -96,7 +119,7 @@ export const createUser = async (
           Item: {
             partitionKey: `user#${userID}`,
             sortKey: `user#info#username`,
-            var1: username,
+            var1: validate.value.username.toLowerCase(),
           },
         },
       },
@@ -106,7 +129,7 @@ export const createUser = async (
           Item: {
             partitionKey: `user#${userID}`,
             sortKey: `user#info#email`,
-            var1: email,
+            var1: validate.value.email,
           },
         },
       },
@@ -117,68 +140,58 @@ export const createUser = async (
     .transactWrite(params)
     .promise()
     .then((res) => {
-      return res;
+      return "Successfully Created";
     })
     .catch((err) => {
-      console.log(err);
-      return new Error("error");
+      return new Error("Error creating user");
     });
 };
 
 /**
- * Get a user given their userID todo: Look into using batch for better speed
+ * Todo
+ * @param properties - Properties to update
+ */
+export const updateUser = async (properties: IUser) => {
+  //todo:
+};
+
+/**
+ * Get a user given their userID
  *
  * @param userID
  */
 export const getUserByID = async (userID: string) => {
-  var params: AWS.DynamoDB.DocumentClient.TransactGetItemsInput = {
-    TransactItems: [
-      {
-        Get: {
-          TableName: "CardCollab",
-          Key: {
-            partitionKey: `user#${userID}`,
-            sortKey: `user#${userID}`,
-          },
-        },
-      },
-      {
-        Get: {
-          TableName: "CardCollab",
-          Key: {
-            partitionKey: `user#${userID}`,
-            sortKey: `user#username`,
-          },
-        },
-      },
-      {
-        Get: {
-          TableName: "CardCollab",
-          Key: {
-            partitionKey: `user#${userID}`,
-            sortKey: `user#email`,
-          },
-        },
-      },
-    ],
+  var params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+    TableName: "CardCollab",
+    Key: {
+      partitionKey: `user#${userID}`,
+      sortKey: "user#info",
+    },
   };
 
   return await docClient
-    .transactGet(params)
+    .get(params)
     .promise()
     .then((data) => {
+      if (isEmpty(data)) {
+        throw new Error(`User not found: getUserByID("${userID}")`);
+      }
+
       const user: IUser = {
         userID: userID,
-        givenName: data.Responses[0].Item["givenName"],
-        familyName: data.Responses[0].Item["familyName"],
-        role: data.Responses[0].Item["role"],
-        email: data.Responses[1].Item["var1"],
-        username: data.Responses[2].Item["var1"],
+        givenName: data.Item["givenName"],
+        familyName: data.Item["familyName"],
+        role: data.Item["role"],
+        email: data.Item["email"],
+        username: data.Item["vanityUsername"],
+        birthDate: data.Item["birthDate"],
+        createdAt: data.Item["var1"],
+        updatedAt: data.Item["updatedAt"],
       };
       return user;
     })
     .catch((err) => {
-      return new Error("Cant get user by ID");
+      throw new Error(`Error finding user: getUserByID("${userID}")`);
     });
 };
 
@@ -204,20 +217,20 @@ export const getUserByEmail = async (
     .query(params)
     .promise()
     .then(async (data) => {
+      if (data.Count == 0) {
+        throw new Error(`No user found: getUserByEmail("${email}")`);
+      }
+
       const userID = data.Items[0].partitionKey.substring(5);
-      console.log("userID" + userID);
+
       if (config.return)
-        return await getUserByID(userID)
-          .then((data) => {
-            return data;
-          })
-          .catch((err) => {
-            throw new Error("cant find user by id");
-          });
+        return await getUserByID(userID).then((data) => {
+          return data;
+        });
       else return userID;
     })
-    .catch(() => {
-      return new Error("Cant find user");
+    .catch((err) => {
+      throw new Error(`Error whilst getUserByEmail("${email}")`);
     });
 };
 
@@ -243,21 +256,18 @@ export const getUserByUsername = async (
     .query(params)
     .promise()
     .then(async (data) => {
+      if (data.Count == 0)
+        throw new Error(`No user found: getUserByUsername("${username}")`);
+
       const userID = data.Items[0].partitionKey.substring(5);
-      console.log(userID);
 
       if (config.return)
-        return await getUserByID(userID)
-          .then((data) => {
-            return data;
-          })
-          .catch((err) => {
-            console.log(err);
-            return new Error("cant find user by id");
-          });
+        return await getUserByID(userID).then((data) => {
+          return data;
+        });
       else return userID;
     })
     .catch(() => {
-      return new Error("Cant find user by username");
+      throw new Error("Cant find user by username");
     });
 };

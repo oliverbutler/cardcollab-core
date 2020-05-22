@@ -1,30 +1,39 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createUser, getUserByID, getUserByEmail } from "util/db/user";
-import { validateBody } from "util/functions";
+import {
+  createUser,
+  getUserByID,
+  getUserByEmail,
+  getUserByUsername,
+} from "util/db/user";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "POST":
       try {
         const user = await createUser(
+          undefined,
           req.body.givenName,
           req.body.familyName,
           req.body.username,
           req.body.email,
-          req.body.dateOfBirth
+          req.body.birthDate
         );
         return res.send(user);
       } catch (error) {
-        console.log(error);
         return res.status(400).send(error.message);
       }
     case "GET":
       try {
-        const user = await getUserByEmail(req.body.email, { return: true });
+        var user = null;
+        if (req.body.email)
+          user = await getUserByEmail(req.body.email, { return: true });
+        else if (req.body.username)
+          user = await getUserByUsername(req.body.username, { return: true });
+        else if (req.body.userID) user = await getUserByID(req.body.userID);
+
         return res.send(user);
       } catch (error) {
-        console.log(error);
-        return res.send(error);
+        return res.send(error.message);
       }
 
     default:

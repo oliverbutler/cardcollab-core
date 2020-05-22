@@ -9,19 +9,6 @@ import { sendEmailConfirmation } from "util/mail";
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
-  // Validate the body
-
-  //todo: check body content inc password strength etc.
-
-  // Check that the email is available
-  var check = await getUserByEmail(req.body.email, { return: false });
-  if (check == {}) return res.status(400).send("Email Taken");
-
-  // Check that the username is available
-
-  var check = await getUserByUsername(req.body.username, { return: false });
-  if (check == {}) return res.status(400).send("Username Taken");
-
   // Generate userID, emailCallback and secret
 
   var userID = nanoid.nanoid();
@@ -32,15 +19,15 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     await createUser(
+      userID,
       req.body.givenName,
       req.body.familyName,
       req.body.username,
       req.body.email,
-      req.body.dateOfBirth
+      req.body.birthDate
     );
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("Error saving user data");
+    return res.status(500).send(error.message);
   }
 
   // Save auth data to DB
@@ -49,7 +36,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     await setUserAuthLocal(userID, secret, null, 0, null, false);
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Error saving auth data");
+    return res.status(500).send(error.message);
   }
 
   // Save callback to DB
@@ -58,7 +45,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     await createUserCallback(userID, emailCallback);
   } catch (error) {
     console.log(error);
-    return res.status(500).send("Error saving callback info");
+    return res.status(500).send(error.message);
   }
 
   // Send email confirmation async (just send it)

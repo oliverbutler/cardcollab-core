@@ -17,6 +17,7 @@ export type Payload = {
   exp: number;
   iat: number;
   sub: String;
+  role: string[];
 };
 
 /**
@@ -24,7 +25,7 @@ export type Payload = {
  * @param payload - Object to store in JWT
  */
 export const signJWT = (payload: Payload) => {
-  return jwt.sign(payload, serverRuntimeConfig.SECRET, { algorithm: "ES512" });
+  return jwt.sign(payload, serverRuntimeConfig.SECRET);
 };
 
 /**
@@ -42,7 +43,7 @@ export const verifyJWT = (JWT) => {
  * @param str - The string to hash
  */
 export const genSecret = (str: string): string => {
-  const salt = bcrypt.genSaltSync(15);
+  const salt = bcrypt.genSaltSync(13);
   return bcrypt.hashSync(str, salt);
 };
 
@@ -57,23 +58,30 @@ export const compareSecret = (secret: string, hash: string): boolean => {
 };
 
 /**
- * Generate an idToken using a user
+ * Generates an accessToken for a given user
  *
- * @param user - User for the JWT
+ * @param userID
+ * @param role
+ * @param lifeSpan - life span in minutes
  */
-export const genIdToken = (userID): string => {
+export const getAccessToken = (
+  userID: string,
+  role: string[],
+  lifeSpan: number = 5
+): string => {
   return signJWT({
     iat: Date.now(),
-    exp: Date.now() + 5 * 60,
+    exp: Date.now() + lifeSpan * 60,
     sub: userID,
+    role: role,
   });
 };
 
 /**
  * Generate a refresh token, just a nanoID
  *
- * @param length - Length of refresh token. 32 default
+ * @param length - Length of refresh token. 100 default
  */
-export const genRefreshToken = (length: number = 32): string => {
+export const getRefreshToken = (length: number = 100): string => {
   return nanoid.nanoid(length);
 };
