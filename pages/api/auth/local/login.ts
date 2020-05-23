@@ -48,7 +48,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
   const deviceID = nanoid.nanoid();
   const ip = req.connection.remoteAddress;
   const refreshToken = getRefreshToken(128);
-  const accessToken = getAccessToken(user.userID, user.role, 10); //fixme: put back to a shorter time
+  const accessToken = getAccessToken(user.userID, user.role, 60); //fixme: put back to a shorter time
   const expiresAt = new Date(
     Date.now() + 14 * 24 * 60 * 60 * 1000
   ).toISOString();
@@ -78,7 +78,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
         user.userID,
         deviceID,
         new Date().toISOString(),
-        "",
+        req.headers["user-agent"],
         "Unknown Device",
         ip,
         refreshToken,

@@ -181,7 +181,7 @@ export const verifyCallback = async (callback: string) => {
  * @param userID - userID of user
  * @param deviceID - new device iD
  * @param lastSeen - current time probably
- * @param name - name e.g. Chrome 432.0 Windows...
+ * @param userAgent - name e.g. Chrome 432.0 Windows...
  * @param friendlyName - let the user give devices a custom name
  * @param lastIP - the last IP, used to detect irregularities
  * @param refreshToken - the refresh token assigned to this device
@@ -191,7 +191,7 @@ export const createDevice = async (
   userID: string,
   deviceID: string,
   lastSeen: string,
-  name: string,
+  userAgent: string,
   friendlyName: string,
   lastIP: string,
   refreshToken: string,
@@ -203,7 +203,7 @@ export const createDevice = async (
       partitionKey: `user#${userID}`,
       sortKey: `device#${deviceID}`,
       lastSeen,
-      name,
+      userAgent,
       friendlyName,
       lastIP,
       refreshToken,
@@ -215,12 +215,10 @@ export const createDevice = async (
     .put(params)
     .promise()
     .then((data) => {
-      console.log(data);
       return data;
     })
     .catch((err) => {
-      console.log(err);
-      throw new Error(err.message);
+      throw err;
     });
 };
 
@@ -266,7 +264,7 @@ export const updateDevice = async (
   var uv = {};
   [
     "lastSeen",
-    "name",
+    "userAgent",
     "friendlyName",
     "lastIP",
     "refreshToken",

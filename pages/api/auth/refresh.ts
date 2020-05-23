@@ -27,7 +27,7 @@ const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const ip = req.connection.remoteAddress;
   const refreshToken = getRefreshToken(128);
-  const accessToken = getAccessToken(user.userID, user.role, 10);
+  const accessToken = getAccessToken(user.userID, user.role, 60);
   const expiresAt = new Date(
     Date.now() + 14 * 24 * 60 * 60 * 1000
   ).toISOString();
