@@ -1,5 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
+import { isEmpty } from "util/functions";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -11,7 +12,7 @@ export const addModule = async (
   university: string,
   moduleCode: string,
   title: string,
-  active: boolean
+  active: boolean = true
 ) => {
   var params: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
     RequestItems: {
@@ -28,7 +29,7 @@ export const addModule = async (
           PutRequest: {
             Item: {
               partitionKey: `module#uni#${university}#${moduleCode}`,
-              sortKey: `moduleInfo`,
+              sortKey: `module#info`,
               title: title,
               active: active,
             },
@@ -42,11 +43,10 @@ export const addModule = async (
     .batchWrite(params)
     .promise()
     .then((res) => {
-      return "success!";
+      return "Success";
     })
     .catch((err) => {
-      console.log(err);
-      return new Error("Failed to add module");
+      throw err;
     });
 };
 
@@ -63,11 +63,10 @@ export const getModules = async (university: string, moduleCode: string) => {
     .query(params)
     .promise()
     .then((res) => {
-      return res;
+      return res.Items;
     })
     .catch((err) => {
-      console.log(err);
-      return new Error("Error query");
+      throw err;
     });
 };
 
@@ -76,17 +75,36 @@ export const getModule = async (partitionKey: string) => {
     TableName: "CardCollab",
     Key: {
       partitionKey: partitionKey,
-      sortKey: "moduleInfo",
+      sortKey: "module#info",
     },
   };
   return await docClient
     .get(params)
     .promise()
     .then((res) => {
-      return res;
+      if (isEmpty(res)) throw new Error("Module not found");
+      return res.Item;
     })
     .catch((err) => {
-      console.log(err);
-      return new Error("Error getting module");
+      throw err;
     });
 };
+
+// export const deleteModule = async (module) => {
+//   const params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+//     TableName: "CardCollab",
+//     Key: {
+//       partitionKey: "module#uni#newcastle_university",
+//       sortKey: module,
+//     },
+//   };
+//   return await docClient
+//     .delete(params)
+//     .promise()
+//     .then(() => {
+//       return "success";
+//     })
+//     .catch((err) => {
+//       throw err;
+//     });
+// };

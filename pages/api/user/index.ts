@@ -5,8 +5,15 @@ import {
   getUserByEmail,
   getUserByUsername,
 } from "util/db/user";
+import { checkAuth } from "util/auth";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    checkAuth(req, "admin");
+  } catch (err) {
+    return res.status(401).send(err.message);
+  }
+
   switch (req.method) {
     case "POST":
       try {

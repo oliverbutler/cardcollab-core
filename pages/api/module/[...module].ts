@@ -7,7 +7,11 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
       var partitionKey = `module#${req.query.module[0]}#${req.query.module[1]}#${req.query.module[2]}`;
       await getModule(partitionKey)
         .then((value) => {
-          return res.send(value);
+          return res.send({
+            active: value.active,
+            module: value.partitionKey,
+            title: value.title,
+          });
         })
         .catch((err) => {
           return res.send(err);
