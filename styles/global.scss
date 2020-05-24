@@ -16,7 +16,11 @@ $body-background-color: $white;
 @import "../node_modules/bulma/bulma.sass";
 @import "./navigation.scss";
 
-.section {
+#page-container {
+  position: relative;
   min-height: 100vh;
-  padding: 24px;
+}
+
+.container {
+  padding-bottom: 2.5rem; /* Footer height */
 }
