@@ -6,20 +6,23 @@ const decks = [
     title: "Algorithms and Design",
     author: "Jonno",
     description: "Algorithm and design flash cards for CSC2023",
+    userType: "Free",
     url:
       "https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80",
   },
   {
     title: "Operating Systems",
-    author: "olly",
+    author: "Sam",
     description: "Operating systems module",
+    userType: "Pro",
     url:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
   },
   {
     title: "Web Development",
-    author: "olly",
+    author: "Laura",
     description: "Web development with XHTML",
+    userType: "Free",
     url:
       "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80",
   },
@@ -42,6 +45,11 @@ const about = () => {
           </div>
         ))}
       </div>
+      <p className="subtitle">
+        We use simple minualist cards to allow you to find what you need to
+        revise as fast as possible! by optimizing your workflow using cardcollab
+        it has been shown to increase your grades
+      </p>
     </div>
   );
 };
