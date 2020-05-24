@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getDeck, updateDeck, IDeck } from "util/db/deck";
-import { addCard } from "util/db/card";
+import { getDeck, updateDeck, IDeck, deleteDeck } from "util/db/deck";
+import { addCard, getCards } from "util/db/card";
 import { checkAuth } from "util/auth";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -10,6 +10,8 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (err) {
     return res.status(401).send(err.message);
   }
+
+  const deckID = req.query.deckID.toString();
 
   // Check whether user owns the deck
   var ownDeck = false;
@@ -31,11 +33,7 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
         return res
           .status(401)
           .send("You don't have permission to edit this deck");
-      await addCard(
-        req.query.deckID.toString(),
-        req.body.question,
-        req.body.answer
-      )
+      await addCard(deckID, req.body.question, req.body.answer)
         .then((value) => {
           return res.send(value);
         })
@@ -43,15 +41,14 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
           return res.status(400).send(err.message);
         });
       break;
+
     case "GET":
-      // @ts-ignore
-      await getDeck(req.query.deckID)
-        .then((value) => {
-          return res.send(value);
-        })
-        .catch((err) => {
-          return res.status(400).send(err.message);
-        });
+      await Promise.all([getDeck(deckID), getCards(deckID)]).then((value) => {
+        //@ts-ignore
+        value[0].cards = value[1];
+        res.send(value[0]);
+      });
+
       break;
     case "PATCH":
       if (!ownDeck && !req["user"].role.includes("admin"))
@@ -59,8 +56,21 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
           .status(401)
           .send("You don't have permission to edit this deck");
 
-      // @ts-ignore
-      await updateDeck(req.query.deckID, req.body)
+      await updateDeck(deckID, req.body)
+        .then((value) => {
+          return res.send(value);
+        })
+        .catch((err) => {
+          return res.status(400).send(err.message);
+        });
+      break;
+    case "DELETE":
+      if (!ownDeck && !req["user"].role.includes("admin"))
+        return res
+          .status(401)
+          .send("You don't have permission to delete this deck");
+
+      await deleteDeck(deckID)
         .then((value) => {
           return res.send(value);
         })
