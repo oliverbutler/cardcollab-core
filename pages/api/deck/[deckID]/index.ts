@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getDeck, updateDeck } from "util/db/deck";
+import { getDeck, updateDeck, IDeck } from "util/db/deck";
 import { addCard } from "util/db/card";
 import { checkAuth } from "util/auth";
 
@@ -14,20 +14,23 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
   // Check whether user owns the deck
   var ownDeck = false;
 
+  var deck: IDeck = null;
   try {
-    const deck = await getDeck(req.query.deckID.toString());
-    if (req["user"].userID == deck["user"]) ownDeck = true;
-    else ownDeck = false;
+    deck = await getDeck(req.query.deckID.toString());
   } catch (err) {
-    return res.status(400).send(err.message);
+    throw res.status(400).send(err.message);
   }
+
+  if (req["user"].userID == deck.userID) ownDeck = true;
 
   // As this pertains to a specific deck, let a user access only their own, or an admin access any
 
   switch (req.method) {
     case "POST":
       if (!ownDeck && !req["user"].role.includes("admin"))
-        return res.status(401).send("Must be an admin");
+        return res
+          .status(401)
+          .send("You don't have permission to edit this deck");
       await addCard(
         req.query.deckID.toString(),
         req.body.question,
@@ -52,7 +55,9 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
       break;
     case "PATCH":
       if (!ownDeck && !req["user"].role.includes("admin"))
-        return res.status(401).send("Must be an admin");
+        return res
+          .status(401)
+          .send("You don't have permission to edit this deck");
 
       // @ts-ignore
       await updateDeck(req.query.deckID, req.body)

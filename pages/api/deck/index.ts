@@ -28,7 +28,7 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
           return res.send(value);
         })
         .catch((err) => {
-          return res.send(err);
+          return res.status(400).send(err.message);
         });
 
     default:
