@@ -10,37 +10,21 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
       } catch (err) {
         return res.status(401).send(err.message);
       }
-      await addModule(
-        req.body.university,
-        req.body.module,
-        req.body.title,
-        (req.body.active = true)
-      )
+      await addModule(req.body.module, req.body.title, (req.body.active = true))
         .then((value) => {
           return res.send(value);
         })
         .catch((err) => {
-          return res.send(err);
+          return res.status(400).send(err.message);
         });
       break;
     case "GET":
-      await getModules(req.body.university, req.body.moduleCode)
+      await getModules(req.body.module, req.body.search)
         .then((value) => {
-          var items = [];
-          // @ts-ignore
-          value.map((item) => {
-            items.push(
-              item.sortKey.substring(
-                `module#uni#${req.body.university}#${req.body.moduleCode}`
-                  .length,
-                item.sortKey.length
-              )
-            );
-          });
-          return res.send(items);
+          return res.send(value);
         })
         .catch((err) => {
-          return res.send(err);
+          return res.status(400).send(err.message);
         });
       break;
     // case "DELETE":
