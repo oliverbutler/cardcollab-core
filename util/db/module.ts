@@ -1,6 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
-import { isEmpty } from "util/functions";
+import { isEmpty, arrayToHash, hashToArray } from "util/functions";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -8,27 +8,36 @@ AWS.config.update({
 
 var docClient = new AWS.DynamoDB.DocumentClient();
 
+/**
+ * Add a new module
+ *
+ * @param module
+ * @param title
+ * @param active
+ */
 export const addModule = async (
-  university: string,
-  moduleCode: string,
+  module: string[],
   title: string,
   active: boolean = true
 ) => {
+  if (module[0] !== "uni")
+    throw new Error("Only uni modules supported currently");
+
   var params: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
     RequestItems: {
       CardCollab: [
         {
           PutRequest: {
             Item: {
-              partitionKey: `module#uni#${university}`,
-              sortKey: `module#uni#${university}#${moduleCode}`,
+              partitionKey: `module#uni#${module[1]}`,
+              sortKey: `module#uni#${module[1]}#${module[2]}`,
             },
           },
         },
         {
           PutRequest: {
             Item: {
-              partitionKey: `module#uni#${university}#${moduleCode}`,
+              partitionKey: `module#uni#${module[1]}#${module[2]}`,
               sortKey: `module#info`,
               title: title,
               active: active,
@@ -39,72 +48,67 @@ export const addModule = async (
     },
   };
 
-  return await docClient
+  return docClient
     .batchWrite(params)
     .promise()
     .then((res) => {
       return "Success";
-    })
-    .catch((err) => {
-      throw err;
     });
 };
 
-export const getModules = async (university: string, moduleCode: string) => {
+/**
+ * Return an array of modules given the module it belongs to, and the search parameter
+ *
+ * @param module
+ * @param search
+ */
+export const getModules = async (module: string[], search: string) => {
   const params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "CardCollab",
     KeyConditionExpression: "partitionKey = :pk and begins_with(sortKey, :sk)",
     ExpressionAttributeValues: {
-      ":pk": `module#uni#${university}`,
-      ":sk": `module#uni#${university}#${moduleCode}`,
+      ":pk": `module#${arrayToHash(module)}`,
+      ":sk": `module#${arrayToHash(module)}#${search}`,
     },
   };
-  return await docClient
+  return docClient
     .query(params)
     .promise()
     .then((res) => {
-      return res.Items;
-    })
-    .catch((err) => {
-      throw err;
+      const out = res.Items.map((module) => {
+        return module.sortKey.split("#").pop();
+      });
+      return out;
     });
 };
 
-export const getModule = async (partitionKey: string) => {
+/**
+ * Returns an individual module given its info
+ *
+ * @param module
+ */
+export const getModule = async (module: string[]) => {
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: "CardCollab",
     Key: {
-      partitionKey: partitionKey,
+      partitionKey: `module#${arrayToHash(module)}`,
       sortKey: "module#info",
     },
   };
   return await docClient
     .get(params)
     .promise()
-    .then((res) => {
-      if (isEmpty(res)) throw new Error("Module not found");
-      return res.Item;
+    .then((value) => {
+      if (isEmpty(value)) throw new Error("Module not found");
+      return {
+        active: value.Item.active,
+        module: hashToArray(value.Item.partitionKey),
+        title: value.Item.title,
+      };
     })
     .catch((err) => {
       throw err;
     });
 };
 
-// export const deleteModule = async (module) => {
-//   const params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
-//     TableName: "CardCollab",
-//     Key: {
-//       partitionKey: "module#uni#newcastle_university",
-//       sortKey: module,
-//     },
-//   };
-//   return await docClient
-//     .delete(params)
-//     .promise()
-//     .then(() => {
-//       return "success";
-//     })
-//     .catch((err) => {
-//       throw err;
-//     });
-// };
+export const deleteModule = () => {};
