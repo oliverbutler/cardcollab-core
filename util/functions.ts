@@ -99,3 +99,44 @@ export const validateProperty = (
 export const isEmpty = (obj: {}) => {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
 };
+
+/**
+ * Create the UpdateExpressions and values required for DynamoDB
+ *
+ * @param properties
+ */
+export const getUpdateExpression = (properties: {}) => {
+  var ue = "set ";
+  var uv = {};
+  Object.keys(properties).forEach((key) => {
+    ue += `${key} = :${key}, `;
+    uv[`:${key}`] = properties[key];
+  });
+  ue = ue.substr(0, ue.length - 2);
+
+  return { UpdateExpression: ue, ExpressionAttributeValues: uv };
+};
+
+/**
+ * Converts module#uni#newcastle_university#csc2023
+ * to ['uni', 'newcastle_university', 'csc2023']
+ * @param str
+ */
+export const hashToArray = (str: string): string[] => {
+  var arr = str.split("#");
+  arr.shift();
+  return arr;
+};
+
+/**
+ *  Opposite of hashToArray, converts ['uni', 'newcastle_university', 'csc2023'] to uni#newcastle_university#csc2023
+ * OPTIONAL PREFIX
+ * @param arr
+ * @param prefix - e.g. "module" or "subject"
+ */
+export const arrayToHash = (arr: string[], prefix: string = null): string => {
+  if (prefix) arr.unshift(prefix);
+
+  var str = arr.join("#");
+  return str;
+};
