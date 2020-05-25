@@ -107,9 +107,9 @@ export const createUser = async (
             var1: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             role: validate.value.role,
-            username: validate.value.username,
-            vanityUsername: validate.value.username.toLowerCase(),
-            email: validate.value.email,
+            username: validate.value.username.toLowerCase(),
+            vanityUsername: validate.value.username,
+            email: validate.value.email.toLowerCase(),
           },
         },
       },
@@ -129,38 +129,35 @@ export const createUser = async (
           Item: {
             partitionKey: `user#${userID}`,
             sortKey: `user#info#email`,
-            var1: validate.value.email,
+            var1: validate.value.email.toLowerCase(),
           },
         },
       },
     ],
   };
 
-  return await docClient
+  return docClient
     .transactWrite(params)
     .promise()
     .then((res) => {
       return "Successfully Created";
-    })
-    .catch((err) => {
-      return new Error("Error creating user");
     });
 };
 
 /**
- * Todo
- * @param properties - Properties to update
+ * Update a user given user id and properties to update
+ *
+ * @param userID
+ * @param properties
  */
-export const updateUser = async (properties: IUser) => {
-  //todo:
-};
+export const updateUser = async (userID: string, properties: IUser) => {};
 
 /**
  * Get a user given their userID
  *
  * @param userID
  */
-export const getUserByID = async (userID: string) => {
+export const getUserByID = (userID: string) => {
   var params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: "CardCollab",
     Key: {
@@ -169,7 +166,7 @@ export const getUserByID = async (userID: string) => {
     },
   };
 
-  return await docClient
+  return docClient
     .get(params)
     .promise()
     .then((data) => {
@@ -189,9 +186,6 @@ export const getUserByID = async (userID: string) => {
         updatedAt: data.Item["updatedAt"],
       };
       return user;
-    })
-    .catch((err) => {
-      throw new Error(`Error finding user: getUserByID("${userID}")`);
     });
 };
 
@@ -213,7 +207,7 @@ export const getUserByEmail = async (
       ":email": email,
     },
   };
-  return await docClient
+  return docClient
     .query(params)
     .promise()
     .then(async (data) => {
@@ -228,9 +222,6 @@ export const getUserByEmail = async (
           return data;
         });
       else return userID;
-    })
-    .catch((err) => {
-      throw new Error(`Error whilst getUserByEmail("${email}")`);
     });
 };
 
@@ -252,7 +243,7 @@ export const getUserByUsername = async (
       ":username": username,
     },
   };
-  return await docClient
+  return docClient
     .query(params)
     .promise()
     .then(async (data) => {
@@ -266,8 +257,5 @@ export const getUserByUsername = async (
           return data;
         });
       else return userID;
-    })
-    .catch(() => {
-      throw new Error("Cant find user by username");
     });
 };

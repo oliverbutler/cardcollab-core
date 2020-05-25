@@ -188,8 +188,6 @@ export const updateDeck = async (deckID: string, properties: IDeck) => {
   if (validate.subject) updateSub = true;
 
   if (validate.review !== undefined) {
-    console.log("mark both true");
-
     updateMod = true;
     updateSub = true;
   }
