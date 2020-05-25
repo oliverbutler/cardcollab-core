@@ -1,6 +1,5 @@
 import styles from "./deckCard.module.scss";
 import React from "react";
-import cardBase from "./deckBase";
 
 export function Deck(props) {
   return (
