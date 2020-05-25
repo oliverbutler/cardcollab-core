@@ -1,5 +1,4 @@
 import { getToast } from "util/functions";
-import { Auth } from "@aws-amplify/auth";
 
 const AccountReducer = (prevState, action) => {
   console.log(`🔒 Action `, action);
@@ -20,7 +19,7 @@ const AccountReducer = (prevState, action) => {
         user: action.payload,
       };
     case "LOG_OUT":
-      Auth.signOut();
+      // fixme: log out
       getToast().fire({
         icon: "success",
         title: "Logged Out",

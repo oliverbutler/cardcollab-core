@@ -1,6 +1,4 @@
 //@ts-nocheck
-import Auth from "@aws-amplify/auth";
-import { SignUpParams } from "@aws-amplify/auth/lib-esm/types";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -56,36 +54,36 @@ export default () => {
     event.preventDefault();
     setLoading(true);
 
-    const param: SignUpParams = {
-      username: formData.email.value,
-      password: formData.password.value,
-      attributes: {
-        given_name: formData.givenName.value,
-        family_name: formData.familyName.value,
-        birthdate: formData.birthDate.value,
-        preferred_username: formData.username.value,
-      },
-    };
+    // const param: SignUpParams = {
+    //   username: formData.email.value,
+    //   password: formData.password.value,
+    //   attributes: {
+    //     given_name: formData.givenName.value,
+    //     family_name: formData.familyName.value,
+    //     birthdate: formData.birthDate.value,
+    //     preferred_username: formData.username.value,
+    //   },
+    // };
 
-    try {
-      const user = await Auth.signUp(param);
-      console.log(user);
-      setLoading(false);
-      router.push("/login");
-      logEvent("register", formData.email.value + " registered");
-      getToast().fire({
-        icon: "success",
-        title: "Successfully Registered!",
-        text: "Please confirm your email",
-      });
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      getToast().fire({
-        icon: "error",
-        title: err.message,
-      });
-    }
+    // try {
+    //   const user = await Auth.signUp(param);
+    //   console.log(user);
+    //   setLoading(false);
+    //   router.push("/login");
+    //   logEvent("register", formData.email.value + " registered");
+    //   getToast().fire({
+    //     icon: "success",
+    //     title: "Successfully Registered!",
+    //     text: "Please confirm your email",
+    //   });
+    // } catch (err) {
+    //   console.log(err);
+    //   setLoading(false);
+    //   getToast().fire({
+    //     icon: "error",
+    //     title: err.message,
+    //   });
+    // }
   };
 
   // On the change of a property, run it through the validator and also

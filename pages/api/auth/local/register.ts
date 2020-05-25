@@ -1,6 +1,6 @@
 import nanoid from "nanoid";
 import getConfig from "next/config";
-import { genSecret } from "util/auth";
+import { genSecret } from "util/authServer";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUserByEmail, getUserByUsername, createUser } from "util/db/user";
 import { setUserAuthLocal, createUserCallback } from "util/db/auth";

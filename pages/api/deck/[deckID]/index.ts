@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getDeck, updateDeck, IDeck, deleteDeck } from "util/db/deck";
 import { addCard, getCards } from "util/db/card";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   // Ensure the user is authenticated

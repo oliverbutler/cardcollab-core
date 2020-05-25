@@ -5,7 +5,7 @@ import {
   getUserByEmail,
   getUserByUsername,
 } from "util/db/user";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

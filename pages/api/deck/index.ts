@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createDeck, getDeck, getDecks } from "util/db/deck";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

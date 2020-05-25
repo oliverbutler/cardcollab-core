@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { deleteCard, updateCard } from "util/db/card";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 import { IDeck, getDeck } from "util/db/deck";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {

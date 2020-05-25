@@ -1,5 +1,5 @@
 import getConfig from "next/config";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 

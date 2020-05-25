@@ -3,7 +3,6 @@ import { AccountContext } from "context/account";
 import { useContext } from "react";
 import Router from "next/router";
 import { getToast } from "util/functions";
-import Auth from "@aws-amplify/auth";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { logEvent, logPageView } from "util/analytics";
@@ -28,28 +27,28 @@ export default () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    try {
-      const user = await Auth.signIn(
-        formData["email"].value,
-        formData["password"].value
-      );
-      console.log(user);
-      dispatch({
-        type: "LOG_IN",
-        payload: (await Auth.currentUserInfo()).attributes,
-      });
-      setLoading(false);
-      logEvent("login", formData["email"].value + " logged in");
-      getToast().fire({ icon: "success", title: "Logged In! 🎉" });
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      if (err.name == "UserNotConfirmedException") {
-        getToast().fire({ icon: "warning", title: "Email not confirmed" });
-      } else {
-        getToast().fire({ icon: "error", title: "Invalid email or password" });
-      }
-    }
+    // try {
+    //   const user = await Auth.signIn(
+    //     formData["email"].value,
+    //     formData["password"].value
+    //   );
+    //   console.log(user);
+    //   dispatch({
+    //     type: "LOG_IN",
+    //     payload: (await Auth.currentUserInfo()).attributes,
+    //   });
+    //   setLoading(false);
+    //   logEvent("login", formData["email"].value + " logged in");
+    //   getToast().fire({ icon: "success", title: "Logged In! 🎉" });
+    // } catch (err) {
+    //   console.log(err);
+    //   setLoading(false);
+    //   if (err.name == "UserNotConfirmedException") {
+    //     getToast().fire({ icon: "warning", title: "Email not confirmed" });
+    //   } else {
+    //     getToast().fire({ icon: "error", title: "Invalid email or password" });
+    //   }
+    // }
   };
 
   // Every time form data is updated, check if the form is "valid" aka. no errors

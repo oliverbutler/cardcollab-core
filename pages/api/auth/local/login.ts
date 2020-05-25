@@ -1,5 +1,9 @@
 import nanoid from "nanoid";
-import { compareSecret, getRefreshToken, getAccessToken } from "util/auth";
+import {
+  compareSecret,
+  getRefreshToken,
+  getAccessToken,
+} from "util/authServer";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUserByEmail } from "util/db/user";
 import {

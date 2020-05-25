@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { addModule, getModules } from "util/db/module";
-import { checkAuth } from "util/auth";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
