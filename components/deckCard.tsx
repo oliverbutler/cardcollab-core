@@ -19,10 +19,9 @@ export function Deck(props) {
         <div className="card-content">
           <div className="columns">
             <div className="column is-one-third">
-              <br></br>
               <p>
                 @{props.c.author}
-                <span className="tag is-success is-light">
+                <span className={typeclass(props.c.userType)}>
                   {props.c.userType}
                 </span>
               </p>
@@ -37,6 +36,16 @@ export function Deck(props) {
       </div>
     </div>
   );
+}
+function typeclass(val) {
+  console.log(val);
+  if (val == "Admin") {
+    return "tag is-warning is-light";
+  } else if (val == "Pro") {
+    return "tag is-success is-light";
+  } else {
+    return "tag  is-light is-light";
+  }
 }
 
 function profilepic() {

@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 const index = () => {
   return (
-    
     <div className="container">
       <Head>
         <title>CardCollab 📚</title>
@@ -13,7 +12,9 @@ const index = () => {
 
       <div className="columns" style={{ alignItems: "center" }}>
         <div className="column is-two-thirds-tablet">
-          <h1 className="title">Collaborative Success</h1>
+          <h1 id="h" className="title">
+            Collaborative Success
+          </h1>
 
           <p>
             Students who utilize flashcards are more likely to succeed in their

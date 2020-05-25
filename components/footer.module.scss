@@ -1,17 +1,12 @@
 .Footer {
   text-align: center;
   position: absolute;
-  padding: 0em;
+  padding: 1em;
   margin: 0em;
   bottom: 0;
   width: 100%;
   height: auto; /* Footer height */
-  background-color: blanchedalmond;
-
-  .container {
-    width: 100%;
-    text-align: center;
-  }
+  background-color: lightgray;
 
   /* Icons */
 
@@ -19,4 +14,7 @@
     padding: 10px;
     margin: 2px;
   }
+}
+.dm {
+  background-color: #222831; // TODO Implemenet darkMode
 }

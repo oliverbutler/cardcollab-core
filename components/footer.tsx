@@ -8,7 +8,7 @@ const Footer = () => {
 
   return (
     <footer className={styles.Footer}>
-      <div className="columns footer">
+      <div className="columns">
         <div className="column">
           <Switch mode={mode} setMode={setMode} />
         </div>
@@ -46,6 +46,7 @@ const Switch = (prop) => {
         onClick={() => {
           prop.setMode(false);
           document.body.classList.add("dm");
+          document.body.classList.remove("lm");
         }}
       >
         Dark Mode
@@ -58,6 +59,7 @@ const Switch = (prop) => {
         onClick={() => {
           prop.setMode(true);
           document.body.classList.remove("dm");
+          document.body.classList.add("lm");
         }}
       >
         Light Mode
