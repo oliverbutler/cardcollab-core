@@ -7,6 +7,7 @@ const decks = [
     author: "Jonno",
     description: "Algorithm and design flash cards for CSC2023",
     userType: "Admin",
+    showAuthor: true,
     url:
       "https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80",
   },

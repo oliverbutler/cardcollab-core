@@ -1,4 +1,6 @@
 import styles from "./deckCard.module.scss";
+import React from "react";
+import cardBase from "./deckBase";
 
 export function Deck(props) {
   return (
@@ -13,12 +15,17 @@ export function Deck(props) {
             />
           </figure>
           <figure className="profile image is-96x96">
-            <img className="is-rounded" src={profilepic()} />
+            <img
+              className={props.c.showAuthor ? "is-rounded" : "hidden"}
+              src={profilepic()}
+            />
           </figure>
         </div>
         <div className="card-content">
           <div className="columns">
-            <div className="column is-one-third">
+            <div
+              className={props.c.showAuthor ? "column is-one-third" : "hidden"}
+            >
               <p>
                 @{props.c.author}
                 <span className={typeclass(props.c.userType)}>
@@ -44,7 +51,7 @@ function typeclass(val) {
   } else if (val == "Pro") {
     return "tag is-success is-light";
   } else {
-    return "tag  is-light is-light";
+    return "tag hidden";
   }
 }
 
