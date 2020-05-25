@@ -1,6 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
-import { isEmpty, capitalize } from "util/functions";
+import { isEmpty, capitalize, getUpdateExpression } from "util/functions";
 import { schema } from "schema/user";
 
 AWS.config.update({
@@ -150,7 +150,76 @@ export const createUser = async (
  * @param userID
  * @param properties
  */
-export const updateUser = async (userID: string, properties: IUser) => {};
+export const updateUser = async (userID: string, properties: IUser) => {
+  var validate = schema.validate(properties);
+
+  if (validate.value.givenName)
+    validate.value.givenName = capitalize(validate.value.givenName);
+  if (validate.value.familyName)
+    validate.value.familyName = capitalize(validate.value.familyName);
+
+  if (validate.value.username) {
+    validate.value.vanityUsername = validate.value.username;
+    validate.value.username = validate.value.username.toLowerCase();
+  }
+
+  if (validate.error) {
+    throw new Error(validate.error);
+  }
+
+  validate = validate.value;
+
+  const { UpdateExpression, ExpressionAttributeValues } = getUpdateExpression(
+    validate
+  );
+
+  var promises = [];
+
+  var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: "CardCollab",
+    Key: {
+      partitionKey: `user#${userID}`,
+      sortKey: `user#info`,
+    },
+    UpdateExpression,
+    ExpressionAttributeValues,
+  };
+
+  promises.push(docClient.update(params).promise());
+
+  if (properties.email) {
+    var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `user#${userID}`,
+        sortKey: `user#info#email`,
+      },
+      UpdateExpression: "set var1 = :var1",
+      ExpressionAttributeValues: {
+        ":var1": validate.email,
+      },
+    };
+    promises.push(docClient.update(params).promise());
+  }
+  if (properties.username) {
+    var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `user#${userID}`,
+        sortKey: `user#info#username`,
+      },
+      UpdateExpression: "set var1 = :var1",
+      ExpressionAttributeValues: {
+        ":var1": validate.username,
+      },
+    };
+    promises.push(docClient.update(params).promise());
+  }
+
+  return Promise.all(promises).then((res) => {
+    return "Successfully modified user";
+  });
+};
 
 /**
  * Get a user given their userID
@@ -204,7 +273,7 @@ export const getUserByEmail = async (
     KeyConditionExpression: "sortKey = :sk and var1 = :email",
     ExpressionAttributeValues: {
       ":sk": "user#info#email",
-      ":email": email,
+      ":email": email.toLowerCase(),
     },
   };
   return docClient
@@ -212,7 +281,9 @@ export const getUserByEmail = async (
     .promise()
     .then(async (data) => {
       if (data.Count == 0) {
-        throw new Error(`No user found: getUserByEmail("${email}")`);
+        throw new Error(
+          `No user found: getUserByEmail("${email.toLowerCase()}")`
+        );
       }
 
       const userID = data.Items[0].partitionKey.substring(5);
@@ -240,7 +311,7 @@ export const getUserByUsername = async (
     KeyConditionExpression: "sortKey = :sk and var1 = :username",
     ExpressionAttributeValues: {
       ":sk": "user#info#username",
-      ":username": username,
+      ":username": username.toLowerCase(),
     },
   };
   return docClient
@@ -248,7 +319,9 @@ export const getUserByUsername = async (
     .promise()
     .then(async (data) => {
       if (data.Count == 0)
-        throw new Error(`No user found: getUserByUsername("${username}")`);
+        throw new Error(
+          `No user found: getUserByUsername("${username.toLowerCase()}")`
+        );
 
       const userID = data.Items[0].partitionKey.substring(5);
 
