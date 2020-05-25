@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 const Footer = () => {
-  const [mode, setMode] = useState(false);
+  const [mode, setMode] = useState(true);
 
   return (
     <footer className={styles.Footer}>
-      <div className="columns ">
+      <div className="columns footer">
         <div className="column">
           <Switch mode={mode} setMode={setMode} />
         </div>
@@ -41,13 +41,25 @@ const Footer = () => {
 const Switch = (prop) => {
   if (prop.mode) {
     return (
-      <button className="button is-dark" onClick={() => prop.setMode(false)}>
+      <button
+        className="button is-dark"
+        onClick={() => {
+          prop.setMode(false);
+          document.body.classList.add("dm");
+        }}
+      >
         Dark Mode
       </button>
     );
   } else {
     return (
-      <button className="button is-light" onClick={() => prop.setMode(true)}>
+      <button
+        className="button is-light"
+        onClick={() => {
+          prop.setMode(true);
+          document.body.classList.remove("dm");
+        }}
+      >
         Light Mode
       </button>
     );
