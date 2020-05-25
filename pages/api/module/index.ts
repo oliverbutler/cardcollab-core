@@ -6,11 +6,11 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "POST":
       try {
-        checkAuth(req);
+        checkAuth(req, "admin");
       } catch (err) {
         return res.status(401).send(err.message);
       }
-      await addModule(req.body.module, req.body.title, (req.body.active = true))
+      await addModule(req.body.module, req.body.title, req.body.active)
         .then((value) => {
           return res.send(value);
         })
@@ -27,13 +27,6 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
           return res.status(400).send(err.message);
         });
       break;
-    // case "DELETE":
-    //   await getModules(req.body.university, "").then((modules) => {
-    //     modules.forEach(async (module) => {
-    //       await deleteModule(module.sortKey);
-    //     });
-    //     return res.send(modules);
-    //   });
     default:
       return res.status(405).end();
   }

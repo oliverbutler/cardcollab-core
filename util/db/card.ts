@@ -1,6 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
-import { isEmpty } from "util/functions";
+import { isEmpty, getUpdateExpression } from "util/functions";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -99,7 +99,7 @@ export const getCard = (deckID: string, cardID: string) => {
  */
 export const deleteCard = (deckID: string, cardID: string) => {
   var params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
-    TableName: "Decks",
+    TableName: "CardCollab",
     Key: {
       partitionKey: `deck#${deckID}`,
       sortKey: "card#" + cardID,
@@ -121,29 +121,27 @@ export const deleteCard = (deckID: string, cardID: string) => {
  * @param question [optional] - Question to update
  * @param answer [optional] - Answer to update
  */
-export const updateCard = (
-  deckID: string,
-  cardID: string,
-  question: string = null,
-  answer: string = null
-) => {
-  var UpdateExpression = "set ";
-  if (question) UpdateExpression + "question = :q, ";
-  if (answer) UpdateExpression + "answer = :a, ";
+export const updateCard = (deckID: string, cardID: string, properties: {}) => {
+  if (isEmpty(properties))
+    return Promise.reject(new Error("Nothing to update"));
 
-  UpdateExpression = UpdateExpression.substr(0, UpdateExpression.length - 2); // remove trailing comma
+  const { UpdateExpression, ExpressionAttributeValues } = getUpdateExpression(
+    properties
+  );
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: "Decks",
+    TableName: "CardCollab",
     Key: {
-      partitionKey: deckID,
-      sortKey: "card#" + cardID,
+      partitionKey: `deck#${deckID}`,
+      sortKey: `card#${cardID}`,
     },
     UpdateExpression,
-    ExpressionAttributeValues: {
-      ":q": question,
-      ":a": answer,
-    },
+    ExpressionAttributeValues,
   };
-  return docClient.update(params);
+  return docClient
+    .update(params)
+    .promise()
+    .then((res) => {
+      return "Successfully updated card";
+    });
 };
