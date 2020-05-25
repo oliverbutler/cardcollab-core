@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createDeck } from "util/db/deck";
+import { createDeck, getDeck, getDecks } from "util/db/deck";
 import { checkAuth } from "util/auth";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -30,7 +30,12 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
         .catch((err) => {
           return res.status(400).send(err.message);
         });
-
+    case "GET":
+      await getDecks()
+        .then((val) => res.send(val))
+        .catch((err) => {
+          res.status(400).send(err.message);
+        });
     default:
       return res.status(405).end();
   }

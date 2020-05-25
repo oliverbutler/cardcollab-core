@@ -153,6 +153,10 @@ export const createUser = async (
 export const updateUser = async (userID: string, properties: IUser) => {
   var validate = schema.validate(properties);
 
+  // todo: check if module is valid
+
+  // todo: check if subject is valid
+
   if (validate.value.givenName)
     validate.value.givenName = capitalize(validate.value.givenName);
   if (validate.value.familyName)
@@ -169,9 +173,11 @@ export const updateUser = async (userID: string, properties: IUser) => {
 
   validate = validate.value;
 
-  const { UpdateExpression, ExpressionAttributeValues } = getUpdateExpression(
-    validate
-  );
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(validate);
 
   var promises = [];
 
@@ -183,6 +189,7 @@ export const updateUser = async (userID: string, properties: IUser) => {
     },
     UpdateExpression,
     ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
 
   promises.push(docClient.update(params).promise());

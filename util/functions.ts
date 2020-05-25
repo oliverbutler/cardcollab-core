@@ -108,13 +108,20 @@ export const isEmpty = (obj: {}) => {
 export const getUpdateExpression = (properties: {}) => {
   var ue = "set ";
   var uv = {};
+  var en = {}; // names for when something is taken
+
   Object.keys(properties).forEach((key) => {
-    ue += `${key} = :${key}, `;
+    ue += `#${key}Value = :${key}, `;
     uv[`:${key}`] = properties[key];
+    en[`#${key}Value`] = key;
   });
   ue = ue.substr(0, ue.length - 2);
 
-  return { UpdateExpression: ue, ExpressionAttributeValues: uv };
+  return {
+    UpdateExpression: ue,
+    ExpressionAttributeValues: uv,
+    ExpressionAttributeNames: en,
+  };
 };
 
 /**

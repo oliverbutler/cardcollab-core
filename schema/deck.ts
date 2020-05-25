@@ -4,7 +4,7 @@ export const schema = Joi.object().keys({
   title: Joi.string(),
   userID: Joi.string(),
   review: Joi.number(),
-  module: Joi.string(),
-  subject: Joi.string(),
+  module: Joi.any(),
+  subject: Joi.any(),
   acl: Joi.array(),
 });

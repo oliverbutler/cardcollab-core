@@ -86,6 +86,8 @@ export const createDeck = async (
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             var1: `review#0`,
+            module,
+            subject,
           },
         },
       },
@@ -128,35 +130,32 @@ export const createDeck = async (
  * @param deckID
  */
 export const getDeck = (deckID: string) => {
-  var params: AWS.DynamoDB.DocumentClient.QueryInput = {
+  var params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: "CardCollab",
-    KeyConditionExpression: "partitionKey = :pk and begins_with(sortKey, :sk)",
-    ExpressionAttributeValues: {
-      ":pk": `deck#${deckID}`,
-      ":sk": "deck",
+    Key: {
+      partitionKey: `deck#${deckID}`,
+      sortKey: `deck#info`,
     },
   };
   return docClient
-    .query(params)
+    .get(params)
     .promise()
     .then((res) => {
-      if (res.Count == 0) throw new Error("deck not found");
-      var deck = res.Items[0];
+      if (isEmpty(res.Item)) throw new Error("deck not found");
 
       const theDeck: IDeck = {
-        deckID: deck.partitionKey.substring(5, deck.partitionKey.length),
-        title: deck.title,
-        userID: deck.userID,
-        review: parseInt(deck.var1.substring(7, deck.var1.length)),
-        module: hashToArray(
-          res.Items[1].sortKey.substring(5, res.Items[1].sortKey.length)
+        deckID: res.Item.partitionKey.substring(
+          5,
+          res.Item.partitionKey.length
         ),
-        subject: hashToArray(
-          res.Items[2].sortKey.substring(5, res.Items[2].sortKey.length)
-        ),
-        createdAt: deck.createdAt,
-        updatedAt: deck.updatedAt,
-        acl: deck.acl,
+        title: res.Item.title,
+        userID: res.Item.userID,
+        review: parseInt(res.Item.var1.substring(7, res.Item.var1.length)),
+        module: res.Item.module,
+        subject: res.Item.subject,
+        createdAt: res.Item.createdAt,
+        updatedAt: res.Item.updatedAt,
+        acl: res.Item.acl,
       };
       return theDeck;
     });
@@ -224,9 +223,11 @@ export const updateDeck = async (deckID: string, properties: IDeck) => {
     newProperties["var1"] = "review#" + validate.review;
   }
 
-  const { UpdateExpression, ExpressionAttributeValues } = getUpdateExpression(
-    newProperties
-  );
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(newProperties);
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: "CardCollab",
@@ -236,6 +237,7 @@ export const updateDeck = async (deckID: string, properties: IDeck) => {
     },
     UpdateExpression,
     ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
 
   promises.push(docClient.update(params).promise());
@@ -376,4 +378,37 @@ export const deleteDeck = async (deckID: string) => {
   return Promise.all(promises).then((res) => {
     return "Successfully deleted";
   });
+};
+
+export const getDecks = () => {
+  var query: AWS.DynamoDB.DocumentClient.QueryInput = {
+    TableName: "CardCollab",
+    IndexName: "GSI1",
+    ScanIndexForward: false,
+    KeyConditionExpression: "sortKey = :sk and begins_with(var1, :var1)",
+    ExpressionAttributeValues: {
+      ":sk": "deck#info",
+      ":var1": "review#",
+    },
+  };
+  return docClient
+    .query(query)
+    .promise()
+    .then((values) => {
+      const output = values.Items.map((deck) => {
+        const theDeck: IDeck = {
+          deckID: deck.partitionKey.substring(5, deck.partitionKey.length),
+          title: deck.title,
+          userID: deck.userID,
+          review: parseInt(deck.var1.substring(7, deck.var1.length)),
+          module: deck.module,
+          subject: deck.subject,
+          createdAt: deck.createdAt,
+          updatedAt: deck.updatedAt,
+          acl: deck.acl,
+        };
+        return theDeck;
+      });
+      return output;
+    });
 };

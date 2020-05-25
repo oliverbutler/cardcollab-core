@@ -125,9 +125,11 @@ export const updateCard = (deckID: string, cardID: string, properties: {}) => {
   if (isEmpty(properties))
     return Promise.reject(new Error("Nothing to update"));
 
-  const { UpdateExpression, ExpressionAttributeValues } = getUpdateExpression(
-    properties
-  );
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(properties);
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: "CardCollab",
@@ -137,6 +139,7 @@ export const updateCard = (deckID: string, cardID: string, properties: {}) => {
     },
     UpdateExpression,
     ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
   return docClient
     .update(params)
