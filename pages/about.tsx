@@ -1,5 +1,6 @@
 import { logPageView } from "util/analytics";
 import { Deck } from "components/deckCard";
+import { Card } from "components/flipCard";
 
 const decks = [
   {
@@ -51,6 +52,11 @@ const about = () => {
         revise as fast as possible! by optimizing your workflow using cardcollab
         it has been shown to increase your grades
       </p>
+      <div className="container">
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Card />
+        </div>
+      </div>
     </div>
   );
 };

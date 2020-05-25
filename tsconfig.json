@@ -22,6 +22,7 @@
     "**/*.tsx",
     "pages/register.jsx",
     "pages/register.jsx",
-    "pages/api/test.js"
+    "pages/api/test.js",
+    "components/ReactCardFlip.jsx"
   ]
 }
