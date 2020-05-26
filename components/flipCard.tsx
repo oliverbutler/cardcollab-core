@@ -13,10 +13,6 @@ export function Card(props) {
     config: { mass: 5, tension: 500, friction: 80 },
   });
   var text = props.display;
-  text = text.replace("<h1>", "<p class='title'>");
-  text = text.replace("</h1>", "</p>");
-  text = text.replace("<h2>", "<p class='subtitle'>");
-  text = text.replace("</h2>", "</p>");
 
   console.log({ text });
   return (

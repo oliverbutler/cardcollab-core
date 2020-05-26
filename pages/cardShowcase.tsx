@@ -1,5 +1,6 @@
 import { Card } from "components/flipCard";
 import React, { useState, useCallback } from "react";
+import { text } from "@fortawesome/fontawesome-svg-core";
 
 const decks = [
   {
@@ -74,7 +75,7 @@ const about = () => {
     typeof window === "object" ? require("react-quill") : () => false;
   const handleChange = (val) => {
     console.log(val);
-    setValue(val);
+    setValue(parser(val));
   };
 
   return (
@@ -97,11 +98,23 @@ const about = () => {
           onChange={handleChange}
         />
       </div>
+      <h1>Base Out</h1>
       {value}
-      <td dangerouslySetInnerHTML={{ __html: value }} />{" "}
+      <td dangerouslySetInnerHTML={{ __html: value }} />
+      <h1>parsed Out</h1>
+      {parser(value)}
+      <td dangerouslySetInnerHTML={{ __html: parser(value) }} />
     </div>
   );
 };
+
+function parser(text) {
+  console.log(text);
+  text = text.replace(new RegExp("h1", "g"), "p class='title'");
+
+  text = text.replace(new RegExp("h2", "g"), "p class='subtitle'");
+  return text;
+}
 
 export default about;
 
