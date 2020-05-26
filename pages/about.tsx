@@ -33,29 +33,26 @@ const decks = [
 const about = () => {
   logPageView("/about");
   return (
-    <div className="container">
-      <h1 className="title">What is Card Collab</h1>
-      <p className="subtitle">
-        CardCollab is a start up founded by 4 students who were fed up of over
-        complated and distracting revision tools online so as a result we came
-        together andcreated card collab a minualist revision enviroment
-      </p>
-      <div className="columns is-multiline">
-        {decks.map((card) => (
-          <div className="column is-half-tablet is-one-third-desktop is-one-quarter-widescreen">
-            <Deck c={card}></Deck>
-          </div>
-        ))}
-      </div>
-      <p className="subtitle">
-        We use simple minualist cards to allow you to find what you need to
-        revise as fast as possible! by optimizing your workflow using cardcollab
-        it has been shown to increase your grades
-      </p>
+    <div>
       <div className="container">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Card />
+        <h1 className="title">What is Card Collab</h1>
+        <p className="subtitle">
+          CardCollab is a start up founded by 4 students who were fed up of over
+          complated and distracting revision tools online so as a result we came
+          together andcreated card collab a minualist revision enviroment
+        </p>
+        <div className="columns is-multiline">
+          {decks.map((card) => (
+            <div className="column is-half-tablet is-one-third-desktop is-one-quarter-widescreen">
+              <Deck c={card}></Deck>
+            </div>
+          ))}
         </div>
+        <p className="subtitle">
+          We use simple minualist cards to allow you to find what you need to
+          revise as fast as possible! by optimizing your workflow using
+          cardcollab it has been shown to increase your grades
+        </p>
       </div>
     </div>
   );
