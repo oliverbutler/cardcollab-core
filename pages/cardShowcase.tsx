@@ -1,11 +1,5 @@
-import { logPageView } from "util/analytics";
-import { Deck } from "components/deckCard";
 import { Card } from "components/flipCard";
-import { render } from "react-dom";
 import React, { useState, useCallback } from "react";
-import { useTransition, animated } from "react-spring";
-import ReactQuill from "react-quill";
-import Editor from "components/editor/editor";
 
 const decks = [
   {
@@ -75,11 +69,12 @@ const formats = [
 const about = () => {
   var val;
   const [value, setValue] = useState("");
+
   const ReactQuill =
     typeof window === "object" ? require("react-quill") : () => false;
-  const handleChange = (value) => {
-    console.log(value);
-    setValue(value);
+  const handleChange = (val) => {
+    console.log(val);
+    setValue(val);
   };
 
   return (
@@ -87,10 +82,8 @@ const about = () => {
       <div className="columns">
         <div className="column"></div>
         <div className="column">
-          //**** */ @ts-ignore:
           <center>
             <Card name="c" display={value} />
-            // @ts-ignore:
           </center>
         </div>
         <div className="column"></div>
@@ -104,8 +97,12 @@ const about = () => {
           onChange={handleChange}
         />
       </div>
+      {value}
+      <td dangerouslySetInnerHTML={{ __html: value }} />{" "}
     </div>
   );
 };
 
 export default about;
+
+// text

@@ -12,7 +12,12 @@ export function Card(props) {
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80 },
   });
-  const text = props.display;
+  var text = props.display;
+  text = text.replace("<h1>", "<p class='title'>");
+  text = text.replace("</h1>", "</p>");
+  text = text.replace("<h2>", "<p class='subtitle'>");
+  text = text.replace("</h2>", "</p>");
+
   console.log({ text });
   return (
     <div className="cardcontainer">
@@ -22,7 +27,7 @@ export function Card(props) {
             className="c back"
             style={{ opacity: opacity.interpolate((o) => 1 - o), transform }}
           >
-            {ReactHtmlParser(text)}
+            <td dangerouslySetInnerHTML={{ __html: text }} />
           </a.div>
           <a.div
             className="c front"
