@@ -6,6 +6,7 @@ import React from "react";
 import AccountProvider from "context/account";
 import Wrapper from "components/wrapper";
 import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
 
 declare global {
   namespace JSX {

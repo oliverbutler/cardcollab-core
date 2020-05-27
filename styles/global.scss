@@ -14,7 +14,18 @@ $link: $green;
 $body-background-color: $white;
 .dm {
   background-color: #222831; // TODO Implemenet darkMode
+  color: white;
+
+  .front,
+  .back {
+    border-radius: 25px;
+    background: #3e6770;
+
+    background-size: cover;
+    padding: 10px;
+  }
 }
+
 @import "../node_modules/bulma/bulma.sass";
 @import "./navigation.scss";
 

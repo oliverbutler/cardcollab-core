@@ -12,9 +12,7 @@ export function Card(props) {
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80 },
   });
-  var text = props.display;
 
-  console.log({ text });
   return (
     <div className="cardcontainer">
       <div style={{ height: "100%" }}>
@@ -23,7 +21,7 @@ export function Card(props) {
             className="c back"
             style={{ opacity: opacity.interpolate((o) => 1 - o), transform }}
           >
-            <td dangerouslySetInnerHTML={{ __html: text }} />
+            <td dangerouslySetInnerHTML={{ __html: props.displayf }} />
           </a.div>
           <a.div
             className="c front"
@@ -32,7 +30,7 @@ export function Card(props) {
               transform: transform.interpolate((t) => `${t} rotateX(180deg)`),
             }}
           >
-            <h1>Back content</h1>
+            <td dangerouslySetInnerHTML={{ __html: props.displayb }} />
           </a.div>
         </div>
       </div>
