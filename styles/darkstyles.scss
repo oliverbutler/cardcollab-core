@@ -1,3 +1,26 @@
 body {
-  color: aqua;
+  background-color: #222831;
+  $family-sans-serif: "Nunito", sans-serif;
+  $primary: $blue;
+  $link: $green;
+  $title-color: $white;
+  $subtitle-color: $white;
+  $color: $white;
 }
+.Footer {
+  background-color: #1b262c;
+}
+$title-color: $white;
+$subtitle-color: $white;
+body,
+ul,
+li {
+  color: #fefdff !important;
+}
+$navbar-item-color: #fefdff;
+$navbar-item-hover-background-color: #1b262c;
+$navbar-item-hover-color: #fefdff;
+$card-content-background-color: #1b262c;
+$card-header-color: #fefdff;
+$card-color: #fefdff;
+$footer-background-color: #1b262c;

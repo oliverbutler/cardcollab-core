@@ -1,26 +1,21 @@
-// Set your brand colors
+// Update Bulma's global variables
 $black: #070707;
 $blue: #3454d1;
-$turquoise: #05a9c7;
+$turquoise: #3454d1;
 $green: #06d6a0;
 $white: #fefdff;
 
-// Update Bulma's global variables
-$family-sans-serif: "Nunito", sans-serif;
-$primary: $blue;
-$link: $green;
-
 // Update some of Bulma's component variables
-$body-background-color: $white;
 
-@import "../node_modules/bulma/bulma.sass";
-@import "./navigation.scss";
 @media (prefers-color-scheme: dark) {
   @import "./darkstyles.scss";
 }
 @media (prefers-color-scheme: light) {
   @import "./lightstyles.scss";
 }
+
+@import "../node_modules/bulma/bulma.sass";
+@import "./navigation.scss";
 
 #page-container {
   position: relative;
