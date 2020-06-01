@@ -12,11 +12,15 @@ $link: $green;
 
 // Update some of Bulma's component variables
 $body-background-color: $white;
-.dm {
-  background-color: #222831; // TODO Implemenet darkMode
-}
+
 @import "../node_modules/bulma/bulma.sass";
 @import "./navigation.scss";
+@media (prefers-color-scheme: dark) {
+  @import "./darkstyles.scss";
+}
+@media (prefers-color-scheme: light) {
+  @import "./lightstyles.scss";
+}
 
 #page-container {
   position: relative;
