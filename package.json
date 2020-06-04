@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.12",
     "nanoid": "^3.1.7",
-    "next": "9.3.6",
+    "next": "9.4.0",
     "next-connect": "^0.6.6",
     "node-fetch": "^2.6.0",
     "react": "16.13.1",
