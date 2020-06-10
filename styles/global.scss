@@ -7,13 +7,25 @@ $white: #fefdff;
 
 // Update some of Bulma's component variables
 
-@media (prefers-color-scheme: dark) {
-  @import "./darkstyles.scss";
-}
 @media (prefers-color-scheme: light) {
   @import "./lightstyles.scss";
 }
-
+@media (prefers-color-scheme: dark) {
+  $title-color: $white;
+  $subtitle-color: $white;
+  body,
+  ul,
+  li {
+    color: #fefdff !important;
+  }
+  $navbar-item-color: #fefdff;
+  $navbar-item-hover-background-color: #1b262c;
+  $navbar-item-hover-color: #fefdff;
+  $card-content-background-color: #1b262c;
+  $card-header-color: #fefdff;
+  $card-color: #fefdff;
+  $footer-background-color: #1b262c;
+}
 @import "../node_modules/bulma/bulma.sass";
 @import "./navigation.scss";
 
