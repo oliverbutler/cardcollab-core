@@ -56,14 +56,8 @@ export function checkDateOfBirth(dateOfBirth: string) {
   var year2 = year.getFullYear();
   var date = new Date().getFullYear();
   var dif = year2 - date;
-  if (dif < -100 || dif > 0) {
-    err = true;
-  }
-  if (err) {
-    return true;
-  } else {
-    return false;
-  }
+  
+  return dif < -100 || dif > 0;
 }
 
 /**
