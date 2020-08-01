@@ -24,4 +24,4 @@ export const awsConfig = {
       responseType: "code", // or 'token', note that REFRESH token will only be generated when the responseType is code
     },
   },
-};
+}

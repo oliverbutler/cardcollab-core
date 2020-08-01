@@ -61,19 +61,19 @@ export const compareSecret = (secret: string, hash: string): boolean => {
 /**
  * Generates an accessToken for a given user
  *
- * @param userID
+ * @param sub
  * @param role
  * @param lifeSpan - life span in minutes
  */
 export const getAccessToken = (
-  userID: string,
+  sub: string,
   role: string[],
   lifeSpan: number = 5
 ): string => {
   return signJWT({
     iat: Date.now(),
     exp: Date.now() + lifeSpan * 60 * 1000,
-    sub: userID,
+    sub: sub,
     role: role,
   });
 };

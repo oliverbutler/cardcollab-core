@@ -24,6 +24,8 @@ const AccountReducer = (prevState, action) => {
         icon: "success",
         title: "Logged Out",
       });
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
       return {
         ...prevState,
         user: null,
