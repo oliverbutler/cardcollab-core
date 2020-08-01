@@ -84,6 +84,7 @@ export default () => {
     //     title: err.message,
     //   });
     // }
+
   };
 
   // On the change of a property, run it through the validator and also
@@ -175,7 +176,7 @@ export default () => {
                   iconLeft="key-outline"
                   error={
                     formData.password2.value &&
-                    formData.password.value != formData.password2.value
+                      formData.password.value != formData.password2.value
                       ? "Passwords don't match"
                       : ""
                   }
