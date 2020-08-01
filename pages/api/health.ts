@@ -1,5 +1,6 @@
 import getConfig from "next/config";
 import { checkAuth } from "util/authServer";
+import { getUserByID } from "util/db/user";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
@@ -11,14 +12,29 @@ const health = (req, res) => {
     userErr = err.message;
   }
 
-  const status = {
-    localTime: new Date().toLocaleString(),
-    universalTime: new Date().toISOString(),
-    deployTime: serverRuntimeConfig.DEPLOY_TIME,
-    user: req.user,
-    userErr,
-  };
-  res.send(status);
+  if (!userErr) {
+    getUserByID(req.user.sub).then((user) => {
+      const status = {
+        localTime: new Date().toLocaleString(),
+        universalTime: new Date().toISOString(),
+        deployTime: serverRuntimeConfig.DEPLOY_TIME,
+        auth: req.user,
+        user,
+        userErr,
+      };
+      res.send(status);
+    })
+  }
+
+  else {
+    const status = {
+      localTime: new Date().toLocaleString(),
+      universalTime: new Date().toISOString(),
+      deployTime: serverRuntimeConfig.DEPLOY_TIME,
+      userErr,
+    };
+    res.send(status);
+  }
 };
 
 export default health;

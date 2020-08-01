@@ -16,10 +16,10 @@ import {
 import geoip from "geoip-lite";
 
 const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
-  // get userID, deviceID and refreshToken from request
+  // get sub, deviceID and refreshToken from request
   var device = null;
   try {
-    device = await getDevice(req.body.userID, req.body.deviceID);
+    device = await getDevice(req.body.sub, req.body.deviceID);
   } catch (err) {
     return res.status(400).send(err.message);
   }

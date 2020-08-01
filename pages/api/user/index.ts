@@ -6,6 +6,7 @@ import {
   getUserByUsername,
 } from "util/db/user";
 import { checkAuth } from "util/authServer";
+import { response } from "util/functions";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -30,15 +31,20 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).send(error.message);
       }
     case "GET":
+
+      // console.log(req['user'])
+
       try {
         var user = null;
         if (req.body.email)
           user = await getUserByEmail(req.body.email, { return: true });
         else if (req.body.username)
           user = await getUserByUsername(req.body.username, { return: true });
-        else if (req.body.userID) user = await getUserByID(req.body.userID);
+        else if (req.body.sub) user = await getUserByID(req.body.sub);
+        else user = await getUserByID(req['user'].sub)
 
-        return res.send(user);
+        return res.send(user)
+
       } catch (error) {
         return res.send(error.message);
       }
