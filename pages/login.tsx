@@ -9,9 +9,11 @@ import { logEvent, logPageView } from "util/analytics";
 import Input, { InputType } from "components/input";
 import { schema } from "schema/login";
 import { validateProperty } from "util/functions";
+import { login } from "util/auth";
 
-export default () => {
+const Login = () => {
   const { state, dispatch } = useContext(AccountContext);
+
 
   var initialState = {};
   ["email", "password"].forEach((p) => {
@@ -27,28 +29,27 @@ export default () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    // try {
-    //   const user = await Auth.signIn(
-    //     formData["email"].value,
-    //     formData["password"].value
-    //   );
-    //   console.log(user);
-    //   dispatch({
-    //     type: "LOG_IN",
-    //     payload: (await Auth.currentUserInfo()).attributes,
-    //   });
-    //   setLoading(false);
-    //   logEvent("login", formData["email"].value + " logged in");
-    //   getToast().fire({ icon: "success", title: "Logged In! 🎉" });
-    // } catch (err) {
-    //   console.log(err);
-    //   setLoading(false);
-    //   if (err.name == "UserNotConfirmedException") {
-    //     getToast().fire({ icon: "warning", title: "Email not confirmed" });
-    //   } else {
-    //     getToast().fire({ icon: "error", title: "Invalid email or password" });
-    //   }
-    // }
+
+    console.log(formData)
+
+    login(formData['email'].value, formData['password'].value).then((res) => {
+      // console.log(res.data.user)
+      dispatch({
+        type: "LOG_IN",
+        payload: res.data.user,
+      });
+      setLoading(false);
+      logEvent("login", res.data.user.email + " logged in");
+      getToast().fire({ icon: "success", title: "Logged In! 🎉" });
+    }).catch((err) => {
+      console.log(err);
+      setLoading(false);
+      if (err.name == "EMAIL_NOT_VERIFIED") {
+        getToast().fire({ icon: "warning", title: "Email not confirmed" });
+      } else {
+        getToast().fire({ icon: "error", title: "Invalid email or password" });
+      }
+    })
   };
 
   // Every time form data is updated, check if the form is "valid" aka. no errors
@@ -137,3 +138,5 @@ export default () => {
     </div>
   );
 };
+
+export default Login

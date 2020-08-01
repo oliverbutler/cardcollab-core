@@ -5,6 +5,7 @@ import Head from "next/head";
 import React from "react";
 import AccountProvider from "context/account";
 import Wrapper from "components/wrapper";
+import { parseJwt } from "util/functions";
 
 declare global {
   namespace JSX {
@@ -15,6 +16,8 @@ declare global {
 }
 
 const App = ({ Component, pageProps }) => {
+
+
   return (
     <AccountProvider>
       <Wrapper>

@@ -26,7 +26,7 @@ export interface IConfig {
  * Interface for a user
  */
 export interface IUser {
-  userID: string;
+  sub: string;
   givenName: string;
   familyName: string;
   role: string[];
@@ -53,7 +53,7 @@ export interface IUser {
  *
  */
 export const createUser = async (
-  userID: string = nanoid.nanoid(),
+  sub: string = nanoid.nanoid(),
   givenName: string,
   familyName: string,
   username: string,
@@ -82,13 +82,13 @@ export const createUser = async (
   // Check if the email is taken
   try {
     check = await getUserByEmail(email, { return: false });
-  } catch (err) {}
+  } catch (err) { }
   if (check) throw new Error("Email Taken");
 
   // Check if the username is taken
   try {
     check = await getUserByUsername(username, { return: false });
-  } catch (err) {}
+  } catch (err) { }
 
   if (check) throw new Error("Username Taken");
 
@@ -99,7 +99,7 @@ export const createUser = async (
         Put: {
           TableName: "CardCollab",
           Item: {
-            partitionKey: `user#${userID}`,
+            partitionKey: `user#${sub}`,
             sortKey: `user#info`,
             givenName: validate.value.givenName,
             familyName: validate.value.familyName,
@@ -117,7 +117,7 @@ export const createUser = async (
         Put: {
           TableName: "CardCollab",
           Item: {
-            partitionKey: `user#${userID}`,
+            partitionKey: `user#${sub}`,
             sortKey: `user#info#username`,
             var1: validate.value.username.toLowerCase(),
           },
@@ -127,7 +127,7 @@ export const createUser = async (
         Put: {
           TableName: "CardCollab",
           Item: {
-            partitionKey: `user#${userID}`,
+            partitionKey: `user#${sub}`,
             sortKey: `user#info#email`,
             var1: validate.value.email.toLowerCase(),
           },
@@ -147,10 +147,10 @@ export const createUser = async (
 /**
  * Update a user given user id and properties to update
  *
- * @param userID
+ * @param sub
  * @param properties
  */
-export const updateUser = async (userID: string, properties: IUser) => {
+export const updateUser = async (sub: string, properties: IUser) => {
   var validate = schema.validate(properties);
 
   // todo: check if module is valid
@@ -184,7 +184,7 @@ export const updateUser = async (userID: string, properties: IUser) => {
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: "CardCollab",
     Key: {
-      partitionKey: `user#${userID}`,
+      partitionKey: `user#${sub}`,
       sortKey: `user#info`,
     },
     UpdateExpression,
@@ -198,7 +198,7 @@ export const updateUser = async (userID: string, properties: IUser) => {
     var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
       TableName: "CardCollab",
       Key: {
-        partitionKey: `user#${userID}`,
+        partitionKey: `user#${sub}`,
         sortKey: `user#info#email`,
       },
       UpdateExpression: "set var1 = :var1",
@@ -212,7 +212,7 @@ export const updateUser = async (userID: string, properties: IUser) => {
     var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
       TableName: "CardCollab",
       Key: {
-        partitionKey: `user#${userID}`,
+        partitionKey: `user#${sub}`,
         sortKey: `user#info#username`,
       },
       UpdateExpression: "set var1 = :var1",
@@ -229,15 +229,15 @@ export const updateUser = async (userID: string, properties: IUser) => {
 };
 
 /**
- * Get a user given their userID
+ * Get a user given their sub
  *
- * @param userID
+ * @param sub
  */
-export const getUserByID = (userID: string) => {
+export const getUserByID = (sub: string) => {
   var params: AWS.DynamoDB.DocumentClient.GetItemInput = {
     TableName: "CardCollab",
     Key: {
-      partitionKey: `user#${userID}`,
+      partitionKey: `user#${sub}`,
       sortKey: "user#info",
     },
   };
@@ -247,11 +247,11 @@ export const getUserByID = (userID: string) => {
     .promise()
     .then((data) => {
       if (isEmpty(data)) {
-        throw new Error(`User not found: getUserByID("${userID}")`);
+        throw new Error(`User not found: getUserByID("${sub}")`);
       }
 
       const user: IUser = {
-        userID: userID,
+        sub: sub,
         givenName: data.Item["givenName"],
         familyName: data.Item["familyName"],
         role: data.Item["role"],
@@ -293,13 +293,13 @@ export const getUserByEmail = async (
         );
       }
 
-      const userID = data.Items[0].partitionKey.substring(5);
+      const sub = data.Items[0].partitionKey.substring(5);
 
       if (config.return)
-        return await getUserByID(userID).then((data) => {
+        return await getUserByID(sub).then((data) => {
           return data;
         });
-      else return userID;
+      else return sub;
     });
 };
 
@@ -330,12 +330,12 @@ export const getUserByUsername = async (
           `No user found: getUserByUsername("${username.toLowerCase()}")`
         );
 
-      const userID = data.Items[0].partitionKey.substring(5);
+      const sub = data.Items[0].partitionKey.substring(5);
 
       if (config.return)
-        return await getUserByID(userID).then((data) => {
+        return await getUserByID(sub).then((data) => {
           return data;
         });
-      else return userID;
+      else return sub;
     });
 };

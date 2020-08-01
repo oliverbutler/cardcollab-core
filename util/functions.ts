@@ -147,3 +147,30 @@ export const arrayToHash = (arr: string[], prefix: string = null): string => {
   var str = arr.join("#");
   return str;
 };
+
+/**
+ * Standardized API response
+ *
+ * @param type
+ * @param message
+ * @param data
+ */
+export const response = (
+  type: "SUCCESS" | "ERROR" | "EXPIRED",
+  status: string,
+  message: string = null,
+  data: {} = null
+) => {
+  return { type, status, message, data };
+};
+
+/**
+ * Returns the JSON object of the current access token
+ */
+export const getAccessToken = () => {
+  var accessToken = localStorage.getItem('accessToken')
+
+  if (!accessToken)
+    return null
+  return parseJwt(accessToken)
+}

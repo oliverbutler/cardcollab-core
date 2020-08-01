@@ -1,6 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
-import { isEmpty } from "util/functions";
+import { isEmpty, getUpdateExpression } from "util/functions";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -26,19 +26,12 @@ export interface IAuth {
  * @param userID
  * @param properties - properties to update
  */
-export const updateUserAuthLocal = async (userID: string, properties: {}) => {
-  var ue = "set ";
-  var uv = {};
-  ["secret", "twoFactor", "attempts", "timeout", "emailVerified"].forEach(
-    (property) => {
-      if (properties[property]) {
-        ue += `${property} = :${property}, `;
-        uv[`:${property}`] = properties[property];
-      }
-    }
-  );
-
-  ue = ue.substr(0, ue.length - 2);
+export const updateUserAuthLocal = (userID: string, properties: {}) => {
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(properties);
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: "CardCollab",
@@ -46,18 +39,11 @@ export const updateUserAuthLocal = async (userID: string, properties: {}) => {
       partitionKey: `user#${userID}`,
       sortKey: `user#auth#local`,
     },
-    UpdateExpression: ue,
-    ExpressionAttributeValues: uv,
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
-  return await docClient
-    .update(params)
-    .promise()
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      throw err;
-    });
+  return docClient.update(params).promise();
 };
 
 /**
@@ -67,7 +53,7 @@ export const updateUserAuthLocal = async (userID: string, properties: {}) => {
  *
  * @param userID
  */
-export const getUserAuth = async (userID: string, type: string = "") => {
+export const getUserAuth = (userID: string, type: string = "") => {
   var query: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "CardCollab",
     KeyConditionExpression: "partitionKey = :pk and begins_with(sortKey, :sk)",
@@ -76,17 +62,13 @@ export const getUserAuth = async (userID: string, type: string = "") => {
       ":sk": type ? `user#auth#${type}` : "user#auth",
     },
   };
-  return await docClient
+  return docClient
     .query(query)
     .promise()
     .then((res) => {
       if (res.Count == 0) throw new Error("No user auth found");
       if (type) return res.Items[0];
       else return res.Items;
-    })
-    .catch((err) => {
-      console.log(err);
-      return new Error("Cant get user auth");
     });
 };
 
@@ -113,10 +95,6 @@ export const createUserCallback = async (userID: string, callback: string) => {
     .promise()
     .then(() => {
       return "Success";
-    })
-    .catch((err) => {
-      console.log(err);
-      return new Error("Error saving user callback info");
     });
 };
 
@@ -187,7 +165,7 @@ export const verifyCallback = async (callback: string) => {
  * @param refreshToken - the refresh token assigned to this device
  * @param expiresAt - The time the refresh token expires at
  */
-export const createDevice = async (
+export const createDevice = (
   userID: string,
   deviceID: string,
   lastSeen: string,
@@ -211,7 +189,7 @@ export const createDevice = async (
     },
   };
 
-  return await docClient
+  return docClient
     .put(params)
     .promise()
     .then((data) => {
@@ -236,15 +214,12 @@ export const getDevice = async (userID: string, deviceID: string) => {
       sortKey: `device#${deviceID}`,
     },
   };
-  return await docClient
+  return docClient
     .get(params)
     .promise()
     .then((res) => {
       if (isEmpty(res)) throw new Error("Device not found");
       return res.Item;
-    })
-    .catch((err) => {
-      throw err;
     });
 };
 
@@ -255,28 +230,16 @@ export const getDevice = async (userID: string, deviceID: string) => {
  * @param deviceID
  * @param properties - which properties of the device to update
  */
-export const updateDevice = async (
+export const updateDevice = (
   userID: string,
   deviceID: string,
   properties: {}
 ) => {
-  var ue = "set ";
-  var uv = {};
-  [
-    "lastSeen",
-    "userAgent",
-    "friendlyName",
-    "lastIP",
-    "refreshToken",
-    "expiresAt",
-  ].forEach((property) => {
-    if (properties[property]) {
-      ue += `${property} = :${property}, `;
-      uv[`:${property}`] = properties[property];
-    }
-  });
-
-  ue = ue.substr(0, ue.length - 2);
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(properties);
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
     TableName: "CardCollab",
@@ -284,17 +247,15 @@ export const updateDevice = async (
       partitionKey: `user#${userID}`,
       sortKey: `device#${deviceID}`,
     },
-    UpdateExpression: ue,
-    ExpressionAttributeValues: uv,
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
 
-  return await docClient
+  return docClient
     .update(params)
     .promise()
     .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      throw err;
+      return "Success";
     });
 };
