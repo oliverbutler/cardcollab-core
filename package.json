@@ -10,7 +10,7 @@
     "prepare": "yarn run snyk-protect"
   },
   "dependencies": {
-    "@aws-amplify/auth": "^3.2.6",
+    "@aws-amplify/auth": "^3.3.1",
     "@aws-amplify/core": "^3.2.6",
     "aws-sdk": "^2.676.0",
     "classnames": "^2.2.6",
