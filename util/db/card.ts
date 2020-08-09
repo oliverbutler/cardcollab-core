@@ -1,5 +1,6 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
+import { isEmpty, getUpdateExpression } from "util/functions";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -15,17 +16,79 @@ var docClient = new AWS.DynamoDB.DocumentClient();
  * @param answer - Answer
  */
 export const addCard = (deckID: string, question: string, answer: string) => {
+  const cardID = nanoid.nanoid();
   var params: AWS.DynamoDB.DocumentClient.PutItemInput = {
     TableName: "CardCollab",
     Item: {
       partitionKey: `deck#${deckID}`,
-      sortKey: "card#" + nanoid.nanoid(),
+      sortKey: "card#" + cardID,
       question: question,
       answer: answer,
     },
   };
 
-  return docClient.put(params).promise();
+  return docClient
+    .put(params)
+    .promise()
+    .then((res) => {
+      return cardID;
+    });
+};
+
+/**
+ * Returns all the cards of a deck in an array
+ *
+ * @param deckID
+ */
+export const getCards = (deckID: string) => {
+  var params: AWS.DynamoDB.DocumentClient.QueryInput = {
+    TableName: "CardCollab",
+    KeyConditionExpression: "partitionKey = :pk and begins_with(sortKey, :sk)",
+    ExpressionAttributeValues: {
+      ":pk": `deck#${deckID}`,
+      ":sk": "card#",
+    },
+  };
+  return docClient
+    .query(params)
+    .promise()
+    .then((res) => {
+      var cards = res.Items.map((value) => {
+        return {
+          cardID: value.sortKey.substring(5, value.sortKey.length),
+          question: value.question,
+          answer: value.answer,
+        };
+      });
+      return cards;
+    });
+};
+
+/**
+ * Get an individual card
+ *
+ * @param deckID
+ * @param cardID
+ */
+export const getCard = (deckID: string, cardID: string) => {
+  var params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+    TableName: "CardCollab",
+    Key: {
+      partitionKey: `deck#${deckID}`,
+      sortKey: `card#${cardID}`,
+    },
+  };
+  return docClient
+    .get(params)
+    .promise()
+    .then((value) => {
+      if (isEmpty(value.Item)) throw new Error("No Card Found");
+      return {
+        cardID: value.Item.sortKey.substring(5, value.Item.sortKey.length),
+        question: value.Item.question,
+        answer: value.Item.answer,
+      };
+    });
 };
 
 /**
@@ -36,13 +99,18 @@ export const addCard = (deckID: string, question: string, answer: string) => {
  */
 export const deleteCard = (deckID: string, cardID: string) => {
   var params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
-    TableName: "Decks",
+    TableName: "CardCollab",
     Key: {
       partitionKey: `deck#${deckID}`,
       sortKey: "card#" + cardID,
     },
   };
-  return docClient.delete(params).promise();
+  return docClient
+    .delete(params)
+    .promise()
+    .then((res) => {
+      return "Successfully deleted card";
+    });
 };
 
 /**
@@ -53,29 +121,30 @@ export const deleteCard = (deckID: string, cardID: string) => {
  * @param question [optional] - Question to update
  * @param answer [optional] - Answer to update
  */
-export const updateCard = (
-  deckID: string,
-  cardID: string,
-  question: string = null,
-  answer: string = null
-) => {
-  var UpdateExpression = "set ";
-  if (question) UpdateExpression + "question = :q, ";
-  if (answer) UpdateExpression + "answer = :a, ";
+export const updateCard = (deckID: string, cardID: string, properties: {}) => {
+  if (isEmpty(properties))
+    return Promise.reject(new Error("Nothing to update"));
 
-  UpdateExpression = UpdateExpression.substr(0, UpdateExpression.length - 2); // remove trailing comma
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(properties);
 
   var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: "Decks",
+    TableName: "CardCollab",
     Key: {
-      partitionKey: deckID,
-      sortKey: "card#" + cardID,
+      partitionKey: `deck#${deckID}`,
+      sortKey: `card#${cardID}`,
     },
     UpdateExpression,
-    ExpressionAttributeValues: {
-      ":q": question,
-      ":a": answer,
-    },
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
   };
-  return docClient.update(params);
+  return docClient
+    .update(params)
+    .promise()
+    .then((res) => {
+      return "Successfully updated card";
+    });
 };

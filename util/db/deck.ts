@@ -1,5 +1,11 @@
 import nanoid from "nanoid";
 import AWS from "aws-sdk";
+import { isEmpty, hashToArray, arrayToHash } from "util/functions";
+import { getUserByID } from "./user";
+import { getModule } from "./module";
+import decks from "pages/decks";
+import { getUpdateExpression } from "util/functions";
+import { schema } from "schema/deck";
 
 AWS.config.update({
   region: "eu-west-2",
@@ -23,24 +29,48 @@ export interface IConfig {
   return: boolean;
 }
 
+export interface IDeck {
+  deckID?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  title?: string;
+  subject?: string[];
+  module?: string[];
+  acl?: IAcl;
+  review?: number;
+  userID?: string;
+  cards?: [{}];
+}
+
 /**
  * Create a new Deck
  *
  * @param title - Title of the deck
- * @param user - User who made it
- * @param acl - Access Control List
+ * @param userID - User who made it
+ * @param acl - [optional] Access Control List
  * @param subject - Subject in the form subject#XXXXXXXXXX
  * @param module - Module in the form module#XXXXXXXXXXX
  */
-export const createDeck = (
+export const createDeck = async (
   title: string,
-  user: string,
-  subject: string,
-  module: string,
+  userID: string,
+  subject: string[],
+  module: string[],
   acl: IAcl = [{ type: "group", id: "public", read: true, write: false }],
   config: IConfig = { return: false }
 ) => {
   var deckID = nanoid.nanoid();
+
+  // Ensure the user, module and subject are correct todo: subject
+
+  try {
+    const [user, mod] = await Promise.all([
+      getUserByID(userID),
+      getModule(module),
+    ]);
+  } catch (err) {
+    throw err;
+  }
 
   var params: AWS.DynamoDB.DocumentClient.TransactWriteItemsInput = {
     TransactItems: [
@@ -49,10 +79,24 @@ export const createDeck = (
           TableName: "CardCollab",
           Item: {
             partitionKey: `deck#${deckID}`,
-            sortKey: `deck#${deckID}`,
+            sortKey: `deck#info`,
             title,
-            user,
+            userID,
             acl,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            var1: `review#0`,
+            module,
+            subject,
+          },
+        },
+      },
+      {
+        Put: {
+          TableName: "CardCollab",
+          Item: {
+            partitionKey: `deck#${deckID}`,
+            sortKey: `deck#module#${arrayToHash(module)}`,
             var1: `review#0`,
           },
         },
@@ -62,24 +106,22 @@ export const createDeck = (
           TableName: "CardCollab",
           Item: {
             partitionKey: `deck#${deckID}`,
-            sortKey: `deck#${module}`,
-            var1: `review#0`,
-          },
-        },
-      },
-      {
-        Put: {
-          TableName: "CardCollab",
-          Item: {
-            partitionKey: `deck#${deckID}`,
-            sortKey: `deck#${subject}`,
+            sortKey: `deck#subject#${arrayToHash(subject)}`,
             var1: `review#0`,
           },
         },
       },
     ],
   };
-  return docClient.transactWrite(params).promise();
+  return docClient
+    .transactWrite(params)
+    .promise()
+    .then((res) => {
+      return deckID;
+    })
+    .catch((err) => {
+      throw err;
+    });
 };
 
 /**
@@ -92,191 +134,281 @@ export const getDeck = (deckID: string) => {
     TableName: "CardCollab",
     Key: {
       partitionKey: `deck#${deckID}`,
-      sortKey: `deck#${deckID}`,
+      sortKey: `deck#info`,
     },
   };
-  return docClient.get(params).promise();
-};
+  return docClient
+    .get(params)
+    .promise()
+    .then((res) => {
+      if (isEmpty(res.Item)) throw new Error("deck not found");
 
-/**
- * Update any parameter of a deck
- *
- * @param deckID Deck ID
- * @param title [optional] - Title of the Deck
- * @param user [optional] - User ID
- * @param score [optional] - Score
- * @param acl [optional] - ACL
- * @param report [optional] - Reports against the deck
- * @param subject [optional] - Subject of the deck
- * @param module [optional] - Module of the deck
- */
-export const updateDeck = async (deckID: string, deckChanges: {}) => {
-  var UpdateExpression = "set ";
-  if (deckChanges["title"]) UpdateExpression += "title = :t, ";
-  if (deckChanges["user"]) UpdateExpression += "#user = :u, ";
-  if (deckChanges["acl"]) UpdateExpression += "acl = :a, ";
-  if (deckChanges["report"]) UpdateExpression += "report: = :r, ";
-  if (deckChanges["score"]) UpdateExpression += "score = :s, ";
-
-  UpdateExpression = UpdateExpression.substr(0, UpdateExpression.length - 2); // remove trailing comma
-
-  // As subject and store are on a different row for instant retrieval via GSI overloading
-  // a query must first be performed to know the correct composite key to update
-
-  if (deckChanges["score"] || deckChanges["subject"])
-    await updateDeckSubject(
-      deckID,
-      deckChanges["subject"],
-      deckChanges["score"]
-    ).catch((err) => {
-      console.log(err);
-    });
-
-  if (deckChanges["score"] || deckChanges["module"]) {
-    await updateDeckModule(
-      deckID,
-      deckChanges["module"],
-      deckChanges["score"]
-    ).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  if (UpdateExpression.length > 4) {
-    var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-      TableName: "CardCollab",
-      Key: {
-        partitionKey: `deck#${deckID}`,
-        sortKey: `deck#${deckID}`,
-      },
-      UpdateExpression,
-      ExpressionAttributeValues: {
-        ":t": deckChanges["title"],
-        ":u": deckChanges["user"],
-        ":s": deckChanges["score"],
-        ":a": deckChanges["acl"],
-        ":r": deckChanges["report"],
-      },
-    };
-    if (deckChanges["user"])
-      params.ExpressionAttributeNames = {
-        "#user": "user",
+      const theDeck: IDeck = {
+        deckID: res.Item.partitionKey.substring(
+          5,
+          res.Item.partitionKey.length
+        ),
+        title: res.Item.title,
+        userID: res.Item.userID,
+        review: parseInt(res.Item.var1.substring(7, res.Item.var1.length)),
+        module: res.Item.module,
+        subject: res.Item.subject,
+        createdAt: res.Item.createdAt,
+        updatedAt: res.Item.updatedAt,
+        acl: res.Item.acl,
       };
-
-    console.log(params);
-
-    return docClient.update(params).promise();
-  } else {
-    return ":)";
-  }
+      return theDeck;
+    });
 };
 
 /**
- * Function to allow updating a decks subject or the score (the score stored in the subject)
+ * Update a deck given its ID and the properties you wish to update
  *
  * @param deckID
+ * @param properties
+ */
+export const updateDeck = async (deckID: string, properties: IDeck) => {
+  var validate = schema.validate(properties);
+
+  if (validate.error) {
+    throw new Error(validate.error);
+  }
+
+  validate = validate.value;
+  validate.updatedAt = new Date().toISOString();
+
+  // Lets check if we need to update the review, or module, or subject
+  var updateSub = false;
+  var updateMod = false;
+
+  const currentDeck = await getDeck(deckID);
+
+  if (validate.module) updateMod = true;
+  if (validate.subject) updateSub = true;
+
+  if (validate.review !== undefined) {
+    updateMod = true;
+    updateSub = true;
+  }
+
+  var promises = [];
+
+  if (updateMod) {
+    promises.push(
+      updateDeckModule(
+        deckID,
+        currentDeck.module,
+        validate.module ? validate.module : currentDeck.module,
+        validate.review ? validate.review : currentDeck.review
+      )
+    );
+  }
+  if (updateSub) {
+    promises.push(
+      updateDeckSubject(
+        deckID,
+        currentDeck.subject,
+        validate.subject ? validate.subject : currentDeck.subject,
+        validate.review ? validate.review : currentDeck.review
+      )
+    );
+  }
+
+  // Create a temp object to rename review, as this causes issues when
+  // writing to the DB, as it is stored as "val1" and is prefixed by review#
+
+  const newProperties: {} = { ...validate };
+  if (validate.review !== undefined) {
+    delete newProperties["review"];
+    newProperties["var1"] = "review#" + validate.review;
+  }
+
+  const {
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  } = getUpdateExpression(newProperties);
+
+  var params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: "CardCollab",
+    Key: {
+      partitionKey: `deck#${deckID}`,
+      sortKey: `deck#info`,
+    },
+    UpdateExpression,
+    ExpressionAttributeValues,
+    ExpressionAttributeNames,
+  };
+
+  promises.push(docClient.update(params).promise());
+
+  return await Promise.all(promises).then((res) => {
+    return "Successfully Modified the deck";
+  });
+};
+
+/**
+ * Update a decks subject row, this involves deleting the row and putting it back,
+ * because we have to change the sortKey
+ *
+ * @param deckID
+ * @param currentSubject
  * @param subject
- * @param score
+ * @param review
  */
 export const updateDeckSubject = async (
   deckID: string,
-  subject: string = null,
-  score: number = null
+  currentSubject: string[],
+  subject: string[],
+  review: number
 ) => {
-  var params: AWS.DynamoDB.DocumentClient.QueryInput = {
-    TableName: "CardCollab",
-    KeyConditionExpression: `partitionKey = :did and begins_with(sortKey, :sub)`,
-    ExpressionAttributeValues: {
-      ":did": `deck#${deckID}`,
-      ":sub": "deck#subject",
-    },
-  };
-  const oldItem = await docClient
-    .query(params)
-    .promise()
-    .then((data) => {
-      return data.Items[0];
-    })
-    .catch((err) => {
-      console.log("updateDeckSubject failed");
-    });
+  if (subject == currentSubject) {
+    var updateParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#subject#${arrayToHash(currentSubject)}`,
+      },
+      UpdateExpression: `set var1 = :var1`,
+      ExpressionAttributeValues: {
+        ":var1": "review#" + review,
+      },
+    };
+    return docClient.update(updateParams).promise();
+  } else {
+    var deleteParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#subject#${arrayToHash(currentSubject)}`,
+      },
+    };
 
-  var deleteParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
-    TableName: "CardCollab",
-    Key: {
-      partitionKey: `deck#${deckID}`,
-      sortKey: oldItem["sortKey"],
-    },
-  };
+    await docClient.delete(deleteParams).promise();
 
-  await docClient
-    .delete(deleteParams)
-    .promise()
-    .catch((err) =>
-      console.log("updateDeckSubject failed (deleting old item)")
-    );
+    var putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
+      TableName: "CardCollab",
+      Item: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#${subject}`,
+        var1: `review#${review}`,
+      },
+    };
 
-  var putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
-    TableName: "CardCollab",
-    Item: {
-      partitionKey: `deck#${deckID}`,
-      sortKey: subject ? `deck#${subject}` : oldItem["subject"],
-      var1: score ? `review#${score}` : oldItem["var1"],
-    },
-  };
-  return docClient.put(putParams).promise();
+    return docClient.put(putParams).promise();
+  }
+};
+
+export const updateDeckModule = async (
+  deckID: string,
+  currentModule: string[],
+  module: string[],
+  review: number
+) => {
+  if (module == currentModule) {
+    var updateParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#module#${arrayToHash(currentModule)}`,
+      },
+      UpdateExpression: `set var1 = :var1`,
+      ExpressionAttributeValues: {
+        ":var1": "review#" + review,
+      },
+    };
+    return docClient.update(updateParams).promise();
+  } else {
+    var deleteParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#module#${arrayToHash(currentModule)}`,
+      },
+    };
+
+    await docClient.delete(deleteParams).promise();
+
+    var params: AWS.DynamoDB.DocumentClient.PutItemInput = {
+      TableName: "CardCollab",
+      Item: {
+        partitionKey: `deck#${deckID}`,
+        sortKey: `deck#module#${arrayToHash(module)}`,
+        var1: `review#${review}`,
+      },
+    };
+    return docClient.put(params).promise();
+  }
 };
 
 /**
- * Function to allow updating a decks module or the score (the score stored in the module)
+ * Delete all rows associated with a deck
  *
  * @param deckID
- * @param module
- * @param score
  */
-export const updateDeckModule = async (
-  deckID: string,
-  module: string = null,
-  score: number = null
-) => {
-  var params: AWS.DynamoDB.DocumentClient.QueryInput = {
+export const deleteDeck = async (deckID: string) => {
+  var queryParam: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "CardCollab",
-    KeyConditionExpression: `partitionKey = :did and begins_with(sortKey, :sub)`,
+    KeyConditionExpression: "partitionKey = :pk",
     ExpressionAttributeValues: {
-      ":did": `deck#${deckID}`,
-      ":sub": "deck#module",
+      ":pk": `deck#${deckID}`,
     },
   };
-  const oldItem = await docClient
-    .query(params)
+  const deckRows = await docClient
+    .query(queryParam)
     .promise()
-    .then((data) => {
-      return data.Items[0];
-    })
-    .catch((err) => {
-      console.log("updateDeckModule failed");
+    .then((values) => {
+      if (values.Count == 0) throw new Error("No deck found");
+      return values.Items;
     });
 
-  var deleteParams: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+  var promises = [];
+
+  deckRows.forEach((row) => {
+    var param: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+      TableName: "CardCollab",
+      Key: {
+        partitionKey: row.partitionKey,
+        sortKey: row.sortKey,
+      },
+    };
+    promises.push(docClient.delete(param).promise());
+  });
+
+  return Promise.all(promises).then((res) => {
+    return "Successfully deleted";
+  });
+};
+
+export const getDecks = () => {
+  var query: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "CardCollab",
-    Key: {
-      partitionKey: `deck#${deckID}`,
-      sortKey: oldItem["sortKey"],
+    IndexName: "GSI1",
+    ScanIndexForward: false,
+    KeyConditionExpression: "sortKey = :sk and begins_with(var1, :var1)",
+    ExpressionAttributeValues: {
+      ":sk": "deck#info",
+      ":var1": "review#",
     },
   };
-
-  await docClient
-    .delete(deleteParams)
+  return docClient
+    .query(query)
     .promise()
-    .catch((err) => console.log("updateDeckModule failed (deleting old item)"));
-
-  var putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
-    TableName: "CardCollab",
-    Item: {
-      partitionKey: `deck#${deckID}`,
-      sortKey: module ? `deck#${module}` : oldItem["module"],
-      var1: score ? `review#${score}` : oldItem["var1"],
-    },
-  };
-  return docClient.put(putParams).promise();
+    .then((values) => {
+      const output = values.Items.map((deck) => {
+        const theDeck: IDeck = {
+          deckID: deck.partitionKey.substring(5, deck.partitionKey.length),
+          title: deck.title,
+          userID: deck.userID,
+          review: parseInt(deck.var1.substring(7, deck.var1.length)),
+          module: deck.module,
+          subject: deck.subject,
+          createdAt: deck.createdAt,
+          updatedAt: deck.updatedAt,
+          acl: deck.acl,
+        };
+        return theDeck;
+      });
+      return output;
+    });
 };

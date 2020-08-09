@@ -71,8 +71,8 @@ function Navigation() {
               </a>
             </Link>
           ) : (
-            <></>
-          )}
+              <></>
+            )}
         </div>
         <div className="right">
           {!state.user ? (
@@ -107,15 +107,15 @@ function Navigation() {
               </a>
             </Link>
           ) : (
-            <Link href="/profile">
-              <a
-                className="button is-primary"
-                onClick={() => setIsActive(false)}
-              >
-                My Profile
+                <Link href="/profile">
+                  <a
+                    className="button is-primary"
+                    onClick={() => setIsActive(false)}
+                  >
+                    My Profile
               </a>
-            </Link>
-          )}
+                </Link>
+              )}
         </div>
       </motion.div>
     </nav>

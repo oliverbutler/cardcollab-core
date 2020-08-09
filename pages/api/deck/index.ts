@@ -1,12 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createDeck } from "util/db/deck";
+import { createDeck, getDeck, getDecks } from "util/db/deck";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    checkAuth(req);
+  } catch (err) {
+    return res.status(401).send(err.message);
+  }
+
+  if (
+    req.body.userID &&
+    !req["user"].sub == req.body.userID &&
+    !req["user"].role.includes("admin")
+  )
+    throw Error(`Can't create a deck for someone else`);
+
   switch (req.method) {
     case "POST":
       await createDeck(
         req.body.title,
-        req.body.user,
+        req.body.userID ? req.body.userID : req["user"].sub,
         req.body.subject,
         req.body.module
       )
@@ -14,9 +28,14 @@ const index = async (req: NextApiRequest, res: NextApiResponse) => {
           return res.send(value);
         })
         .catch((err) => {
-          return res.send(err);
+          return res.status(400).send(err.message);
         });
-
+    case "GET":
+      await getDecks()
+        .then((val) => res.send(val))
+        .catch((err) => {
+          res.status(400).send(err.message);
+        });
     default:
       return res.status(405).end();
   }

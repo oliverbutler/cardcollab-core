@@ -90,3 +90,87 @@ export const validateProperty = (
     return err.message;
   }
 };
+
+/**
+ * Check if an object is empty
+ *
+ * @param obj
+ */
+export const isEmpty = (obj: {}) => {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+};
+
+/**
+ * Create the UpdateExpressions and values required for DynamoDB
+ *
+ * @param properties
+ */
+export const getUpdateExpression = (properties: {}) => {
+  var ue = "set ";
+  var uv = {};
+  var en = {}; // names for when something is taken
+
+  Object.keys(properties).forEach((key) => {
+    ue += `#${key}Value = :${key}, `;
+    uv[`:${key}`] = properties[key];
+    en[`#${key}Value`] = key;
+  });
+  ue = ue.substr(0, ue.length - 2);
+
+  return {
+    UpdateExpression: ue,
+    ExpressionAttributeValues: uv,
+    ExpressionAttributeNames: en,
+  };
+};
+
+/**
+ * Converts module#uni#newcastle_university#csc2023
+ * to ['uni', 'newcastle_university', 'csc2023']
+ * @param str
+ */
+export const hashToArray = (str: string): string[] => {
+  var arr = str.split("#");
+  arr.shift();
+  return arr;
+};
+
+/**
+ *  Opposite of hashToArray, converts ['uni', 'newcastle_university', 'csc2023'] to uni#newcastle_university#csc2023
+ * OPTIONAL PREFIX
+ * @param arr
+ * @param prefix - e.g. "module" or "subject"
+ */
+export const arrayToHash = (arr: string[], prefix: string = null): string => {
+  if (prefix) arr.unshift(prefix);
+
+  var str = arr.join("#");
+  return str;
+};
+
+/**
+ * Standardized API response
+ *
+ * @param type
+ * @param message
+ * @param data
+ */
+export const response = (
+  type: "SUCCESS" | "ERROR" | "EXPIRED",
+  status: string,
+  message: string = null,
+  data: {} = null
+) => {
+  return { type, status, message, data };
+};
+
+/**
+ * Returns the JSON object of the current access token
+ */
+export const getAccessToken = () => {
+  var accessToken = localStorage.getItem('accessToken')
+
+  if (!accessToken)
+    return null
+  return parseJwt(accessToken)
+}

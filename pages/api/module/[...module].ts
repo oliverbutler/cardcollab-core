@@ -1,16 +1,33 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getModule } from "util/db/module";
+import { getModule, deleteModule } from "util/db/module";
+import { checkAuth } from "util/authServer";
 
 const index = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      var partitionKey = `module#${req.query.module[0]}#${req.query.module[1]}#${req.query.module[2]}`;
-      await getModule(partitionKey)
+      //@ts-ignore
+      await getModule(req.query.module)
         .then((value) => {
           return res.send(value);
         })
         .catch((err) => {
-          return res.send(err);
+          return res.status(400).send(err.message);
+        });
+
+    case "DELETE":
+      try {
+        checkAuth(req, "admin");
+      } catch (err) {
+        return res.status(401).send(err.message);
+      }
+
+      // @ts-ignore
+      await deleteModule(req.query.module)
+        .then((value) => {
+          return res.send(value);
+        })
+        .catch((err) => {
+          return res.status(400).send(err.message);
         });
     default:
       return res.status(405).end();

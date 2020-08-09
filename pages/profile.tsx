@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AccountContext } from "context/account";
-import { capitalize } from "util/functions";
+import { capitalize, parseJwt } from "util/functions";
 import { motion } from "framer-motion";
 import { logPageView } from "util/analytics";
 
@@ -19,10 +19,10 @@ function ProfileCard({ user }) {
             alt="user picture"
           />
         </figure>
-        <p>Username: {user.preferred_username}</p>
+        <p>Username: {user.username}</p>
         <p>
           Name:{" "}
-          {capitalize(user.given_name) + " " + capitalize(user.family_name)}
+          {capitalize(user.givenName) + " " + capitalize(user.familyName)}
         </p>
         <p>Email: {user.email}</p>
       </div>
@@ -35,16 +35,17 @@ function Profile() {
 
   logPageView("/profile");
 
+
   return (
     <div className="container">
       <div className="columns is-centered is-vcentered is-mobile">
         <div className="column is-narrow">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {state.loading || !state.user ? (
+            {!state.user ? (
               <div>Loading...</div>
             ) : (
-              <ProfileCard user={state.user} />
-            )}
+                <ProfileCard user={state.user} />
+              )}
           </motion.div>
         </div>
       </div>

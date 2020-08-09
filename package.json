@@ -9,8 +9,6 @@
     "snyk-protect": "snyk protect"
   },
   "dependencies": {
-    "@aws-amplify/auth": "^3.2.6",
-    "@aws-amplify/core": "^3.2.6",
     "@hapi/joi": "^17.1.1",
     "autoprefixer": "^9.8.0",
     "aws-sdk": "^2.675.0",
@@ -19,6 +17,7 @@
     "classnames": "^2.2.6",
     "csv-parser": "^2.3.2",
     "framer-motion": "^1.11.0",
+    "geoip-lite": "^1.4.2",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
@@ -26,7 +25,6 @@
     "nanoid": "^3.1.7",
     "next": "^9.4.1",
     "next-connect": "^0.6.6",
-    "node-fetch": "^2.6.0",
     "postcss-import": "^12.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -37,8 +35,7 @@
     "serverless-next.js": "^1.11.5",
     "snyk": "^1.320.3",
     "sweetalert2": "^9.10.13",
-    "sweetalert2-react-content": "^3.0.1",
-    "tailwindcss": "^1.4.6"
+    "sweetalert2-react-content": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
@@ -47,6 +44,7 @@
     "@types/classnames": "^2.2.10",
     "@types/draft-js": "^0.10.40",
     "@types/isomorphic-fetch": "0.0.35",
+    "@types/joi": "^14.3.4",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/mailgun-js": "^0.22.4",
     "@types/mongoose": "^5.7.16",
@@ -54,7 +52,6 @@
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.35",
     "@types/sass": "^1.16.0",
-    "@types/joi": "^14.3.4",
     "typescript": "^3.8.3"
   },
   "snyk": true

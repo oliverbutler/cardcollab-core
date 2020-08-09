@@ -6,7 +6,6 @@ export const AccountContext = React.createContext();
 const Account = ({ children }) => {
   const initialState = {
     user: null,
-    isLoading: true,
   };
 
   const [state, dispatch] = useReducer(AccountReducer, initialState);
