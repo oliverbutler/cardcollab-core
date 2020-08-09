@@ -3,8 +3,9 @@ import getConfig from "next/config";
 import { genSecret } from "util/authServer";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUserByEmail, getUserByUsername, createUser } from "util/db/user";
-import { setUserAuthLocal, createUserCallback } from "util/db/auth";
+import { updateUserAuthLocal, createUserCallback } from "util/db/auth";
 import { sendEmailConfirmation } from "util/mail";
+import { response } from "util/functions";
 
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
 
@@ -27,16 +28,16 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       req.body.birthDate
     );
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(500).send(response("ERROR", "", error.message));
   }
 
   // Save auth data to DB
 
   try {
-    await setUserAuthLocal(userID, secret, null, 0, null, false);
+    await updateUserAuthLocal(userID, { secret, emailVerified: false });
   } catch (error) {
     console.log(error);
-    return res.status(500).send(error.message);
+    return res.status(500).send(response("ERROR", "", error.message));
   }
 
   // Save callback to DB
@@ -45,14 +46,14 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     await createUserCallback(userID, emailCallback);
   } catch (error) {
     console.log(error);
-    return res.status(500).send(error.message);
+    return res.status(500).send(response("ERROR", "", error.message))
   }
 
   // Send email confirmation async (just send it)
 
   sendEmailConfirmation(req.body.email, req.body.givenName, emailCallback);
 
-  return res.status(201).send("User created, please confirm your email");
+  return res.status(201).send(response("SUCCESS", "USER_CREATED", "User created, please confirm your email"));
 };
 
 export default register;

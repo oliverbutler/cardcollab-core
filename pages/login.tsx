@@ -30,24 +30,19 @@ const Login = () => {
     event.preventDefault();
     setLoading(true);
 
-    console.log(formData)
-
     login(formData['email'].value, formData['password'].value).then((res) => {
-      // console.log(res.data.user)
-      dispatch({
-        type: "LOG_IN",
-        payload: res.data.user,
-      });
-      setLoading(false);
-      logEvent("login", res.data.user.email + " logged in");
-      getToast().fire({ icon: "success", title: "Logged In! 🎉" });
-    }).catch((err) => {
-      console.log(err);
-      setLoading(false);
-      if (err.name == "EMAIL_NOT_VERIFIED") {
-        getToast().fire({ icon: "warning", title: "Email not confirmed" });
+      setLoading(false)
+      if (res.type == "ERROR") {
+        if (res.status == "EMAIL_NOT_VERIFIED")
+          getToast().fire({ icon: "warning", title: "Email not confirmed" });
+        else
+          getToast().fire({ icon: "error", title: "Invalid email or password" });
+
       } else {
-        getToast().fire({ icon: "error", title: "Invalid email or password" });
+        dispatch({
+          type: "LOG_IN",
+          payload: res.data.user,
+        });
       }
     })
   };

@@ -44,7 +44,7 @@ export const verifyJWT = (JWT) => {
  * @param str - The string to hash
  */
 export const genSecret = (str: string): string => {
-  const salt = bcrypt.genSaltSync(13);
+  const salt = bcrypt.genSaltSync(12);
   return bcrypt.hashSync(str, salt);
 };
 

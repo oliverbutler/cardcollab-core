@@ -27,17 +27,17 @@ const refresh = async (req: NextApiRequest, res: NextApiResponse) => {
   if (device.refreshToken != req.body.refreshToken)
     return res.status(400).send("Incorrect refresh token");
 
-  const user = await getUserByID(req.body.userID);
+  const user = await getUserByID(req.body.sub);
 
   const ip = req.connection.remoteAddress;
   const refreshToken = getRefreshToken(128);
-  const accessToken = getAccessToken(user.userID, user.role, 60);
+  const accessToken = getAccessToken(user.sub, user.role, 60);
   const expiresAt = new Date(
     Date.now() + 14 * 24 * 60 * 60 * 1000
   ).toISOString();
 
   try {
-    await updateDevice(user.userID, req.body.deviceID, {
+    await updateDevice(user.sub, req.body.deviceID, {
       lastSeen: new Date().toISOString(),
       lastIP: ip,
       refreshToken,

@@ -26,9 +26,6 @@ export const login = (email: string, password: string) => {
       }
       return res;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const refresh = () => {

@@ -68,7 +68,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
   var deviceID = nanoid.nanoid();
   const ip = req.connection.remoteAddress;
   const refreshToken = getRefreshToken(128);
-  const accessToken = getAccessToken(user.sub, user.role, 60); //fixme: put back to a shorter time
+  const accessToken = getAccessToken(user.sub, user.role, 5); //fixme: put back to a shorter time
   const expiresAt = new Date(
     Date.now() + 14 * 24 * 60 * 60 * 1000
   ).toISOString();
@@ -84,7 +84,20 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       device = await getDevice(user.sub, req.body.deviceID);
     } catch (err) {
-      return res.status(400).send(err.message);
+      try {
+        await createDevice(
+          user.sub,
+          deviceID,
+          new Date().toISOString(),
+          req.headers["user-agent"],
+          "Unknown Device",
+          ip,
+          refreshToken,
+          expiresAt
+        );
+      } catch (err) {
+        return res.status(400).send(err.message);
+      }
     }
     try {
       await updateDevice(user.sub, req.body.deviceID, {
