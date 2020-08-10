@@ -33,7 +33,7 @@
     "sass": "^1.26.5",
     "serverless-next.js": "^1.14.0",
     "snyk": "^1.320.3",
-    "sweetalert2": "^9.10.13",
+    "sweetalert2": "^9.17.0",
     "sweetalert2-react-content": "^3.0.1"
   },
   "devDependencies": {
