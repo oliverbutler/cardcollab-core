@@ -8340,7 +8340,7 @@ serialize-javascript@^3.1.0:
   dependencies:
     randombytes "^2.1.0"
 
-serverless-next.js@^1.11.5:
+serverless-next.js@^1.14.0:
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/serverless-next.js/-/serverless-next.js-1.14.0.tgz#ee105f434bdd879bcabe211fe859de1926e714e9"
   integrity sha512-6Lm6ju+CpdEMEicixhm7SbXXam12rdKWZfGqhQbT2X0DgYJs1t1vg0mJnvJ979vmzKXbDDeP5NCV9rgHSEaGbg==
