@@ -11,7 +11,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "autoprefixer": "^9.8.0",
-    "aws-sdk": "^2.715.0",
+    "aws-sdk": "^2.814.0",
     "bcryptjs": "^2.4.3",
     "bulma": "^0.8.2",
     "classnames": "^2.2.6",
